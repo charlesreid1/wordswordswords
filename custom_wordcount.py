@@ -5,9 +5,11 @@ from nltk.tokenize.punkt import PunktWordTokenizer
 from nltk.text import Text
 import matplotlib.pylab as plt
 
-filenames=['crimeandpunishment.txt',
-           'brotherskaramazov.txt',
-           'theidiot.txt']
+dostoyevsky_filenames=['crimeandpunishment.txt',
+                       'brotherskaramazov.txt',
+                       'theidiot.txt']
+
+filenames=['nyker_graphene.txt']
 
 for filename in filenames:
 
@@ -30,7 +32,7 @@ for filename in filenames:
         print "Num Words "+filename+":",nw
 
         richness = nw/ln
-        print "Lexical Richness %s: %0.3e"%(filename,richness)
+        print "Lexical Richness %s: %0.4f"%(filename,richness)
 
         print "\n"+"-"*40+"\n\n"
 
