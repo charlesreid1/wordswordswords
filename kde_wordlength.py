@@ -8,13 +8,10 @@ import numpy as np
 from scipy import stats
 import brewer2mpl
 
-make_plots = False
-make_freqdist = False
-make_kde = True
-
 dostoyevsky_filenames=['crimeandpunishment.txt',
                        'brotherskaramazov.txt',
                        'theidiot.txt']
+
 other_filenames = ['nyker_graphene.txt']
 
 poetry_filenames=['paradiselost.txt']
@@ -55,47 +52,21 @@ for ii,filename in enumerate(filenames):
 
         print "\n"+"-"*40+"\n\n"
 
-        if make_freqdist:
-            fdist = nltk.FreqDist(tok)
-            mc = fdist.most_common(100)
-            #for ww in mc:
-            #    print "%s\t\t%d"%(ww)#word,wordfreq)
+        z = [len(j) for j in tok]
 
-        # make kde of z
-        if make_kde:
+        kernel = stats.gaussian_kde(z,'scott')
+        xx = np.linspace(1,max(z),max(z))
 
-            z = [len(j) for j in tok]
-
-            kernel = stats.gaussian_kde(z,'scott')
-            xx = np.linspace(1,max(z),max(z))
-
-            ax.plot(xx,kernel(xx),'o-',color=colors[ii],label=filename)
-            ax.legend(loc='best')
-            ax.grid()
-            ax.set_xlim([0,20])
+        ax.plot(xx,kernel(xx),'o-',color=colors[ii],label=filename)
+        ax.legend(loc='best')
+        ax.grid()
+        ax.set_xlim([0,20])
 
 
-            #ax.hist(z,max(z),normed=True)
+        figname = filename[:-4]+'.jpg'
+        print figname
 
-
-        if make_plots:
-
-            fdist.plot(50, cumulative=True)
-
-            z = [len(j) for j in tok]
-
-            fig = plt.figure()
-            ax1 = fig.add_subplot(111)
-
-            ax1.hist(z,max(z),color='g',bottom=0.001)
-
-            ax1.set_title(filename)
-            ax1.set_yscale('log')
-
-            figname = filename[:-4]+'.jpg'
-            print figname
-
-            fig.savefig('img/'+figname)
+        fig.savefig('img/kde_wordlength_'+figname)
 
         print "\n"*2
 
