@@ -16,7 +16,7 @@ filenames = ['crimeandpunishment.txt',
 
 
 
-fig = plt.figure()
+fig = plt.figure(figsize=(6,8))
 ax = fig.add_subplot(111)
 
 bmap = brewer2mpl.get_map('Dark2','qualitative',len(filenames))
@@ -59,7 +59,7 @@ for ii,filename in enumerate(filenames):
         print "\n"*2
 
 ax.legend(loc='best')
-fig.savefig('img/kde_wordlength.jpg')
+fig.savefig('img/kde_wordlength.png')
 plt.show()
 plt.draw()
 

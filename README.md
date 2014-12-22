@@ -7,7 +7,7 @@ tools for analyzing text.
 
 Compute KDE of wordlength probability distribution.
 
-![KDE of wordlengths for various novels.](https://raw.github.com/charlesreid1/wordswordswords/master/img/kde_wordlength.jpg)
+![KDE of wordlengths for various novels.](https://raw.github.com/charlesreid1/wordswordswords/master/img/kde_wordlength.png)
 
 ## custom wordcount
 
