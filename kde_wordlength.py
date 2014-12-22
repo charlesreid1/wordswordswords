@@ -8,18 +8,13 @@ import numpy as np
 from scipy import stats
 import brewer2mpl
 
-dostoyevsky_filenames=['crimeandpunishment.txt',
-                       'brotherskaramazov.txt',
-                       'theidiot.txt']
-
-other_filenames = ['nyker_graphene.txt']
-
-poetry_filenames=['paradiselost.txt']
+filenames = ['crimeandpunishment.txt',
+             'brotherskaramazov.txt',
+             'theidiot.txt',
+             'paradiselost.txt',
+             'mobydick.txt']
 
 
-
-
-filenames = dostoyevsky_filenames
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -58,18 +53,13 @@ for ii,filename in enumerate(filenames):
         xx = np.linspace(1,max(z),max(z))
 
         ax.plot(xx,kernel(xx),'o-',color=colors[ii],label=filename)
-        ax.legend(loc='best')
         ax.grid()
         ax.set_xlim([0,20])
 
-
-        figname = filename[:-4]+'.jpg'
-        print figname
-
-        fig.savefig('img/kde_wordlength_'+figname)
-
         print "\n"*2
 
+ax.legend(loc='best')
+fig.savefig('img/kde_wordlength.jpg')
 plt.show()
 plt.draw()
 
