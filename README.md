@@ -3,6 +3,12 @@ wordswordswords
 
 tools for analyzing text.
 
+## kde wordlength
+
+Compute KDE of wordlength probability distribution.
+
+![KDE of wordlengths for various novels.](https://raw.github.com/charlesreid1/wordswordswords/master/img/kde_wordlength.jpg)
+
 ## custom wordcount
 
 This script loads text files from data/ and runs stats on them.
