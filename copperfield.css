@@ -1,0 +1,49 @@
+/*
+ttp://colorbrewer2.org/
+6-class YlGnBu
+*/
+
+div.oldenglish, div.welsh, div.irish {
+    background-color:#ffffcc;
+}
+
+div.french { 
+    background-color:#c7e9b4;
+}
+
+div.latin { 
+    background-color:#7fcdbb;
+}
+
+div.dutch { 
+    background-color:#41b6c4;
+}
+
+div.greek { 
+    background-color:#2c7fb8;
+}
+
+div.norse, div.oldnorse { 
+    background-color:#d7b5d8;
+}
+
+div.german, div.germanic { 
+    background-color:#df65b0;
+}
+
+div.slavonic, div.arabic, div.polish, div.turkish, div.sanskrit { 
+    background-color:#dd1c77;
+}
+
+div.russian { 
+    background-color:#980043;
+}
+
+div.spanish { 
+    background-color:#fdbe85;
+}
+
+div.americanenglish { 
+    background-color:#e6550d;
+}
+
