@@ -12,6 +12,7 @@ filenames = ['crimeandpunishment.txt',
              'brotherskaramazov.txt',
              'theidiot.txt',
              'paradiselost.txt',
+             'copperfield.txt',
              'mobydick.txt']
 
 
@@ -36,14 +37,14 @@ for ii,filename in enumerate(filenames):
 
         tok = PunktWordTokenizer().tokenize(bk)
 
-        ln = len(tok)
-        print "Length of "+filename+":",ln
+        num_wds = len(tok)
+        print "Length of "+filename+":",num_wds
 
-        nw = len(set(tok))
-        print "Num Words "+filename+":",nw
+        num_uniq_wds = len(set(tok))
+        print "Num Words "+filename+":",num_uniq_wds
 
-        richness = nw/ln
-        print "Lexical Richness %s: %0.4f"%(filename,richness)
+        richness = num_uniq_wds/num_wds
+        print "Lexical Richness (# uniq words/# words) %s: %0.4f"%(filename,richness)
 
         print "\n"+"-"*40+"\n\n"
 
@@ -55,6 +56,8 @@ for ii,filename in enumerate(filenames):
         ax.plot(xx,kernel(xx),'o-',color=colors[ii],label=filename)
         ax.grid()
         ax.set_xlim([0,20])
+        ax.set_xlabel('Word Length')
+        ax.set_ylabel('P(WL)')
 
         print "\n"*2
 
