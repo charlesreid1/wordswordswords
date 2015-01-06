@@ -5,7 +5,7 @@ import pandas as pd
 
 text = '../data/copperfield.txt'
 
-csvfile = 'csv_fullcopperfield_words.csv'
+csvfile = 'csv_copperfield_words.csv'
 htmlfile = 'copperfield_body.html'
 
 languages = ['French','Greek','Latin', \
@@ -35,9 +35,9 @@ languages_key['Polish']             ='polish'
 languages_key['Turkish']            ='turkish'
 
 def main():
-    # First, we want to export definition and language to a file.
-    # But this takes a long time, and we only want to do it once.
-    export_file(csvfile)
+    # # First, we want to export definition and language to a file.
+    # # But this takes a long time, and we only want to do it once.
+    # export_file(csvfile)
 
     # Next, we want to read the text, tag it, export to html
     s = gen_html_file(csvfile,htmlfile)
@@ -54,19 +54,33 @@ def gen_html_file(csvfile,htmlfile):
 
     words_w_lang = words[words['root language']<>'']
 
+    print "Obtaining tokens..."
     tokens = t.tokenize()._collection
+    print "done"
 
-    for ii,word_row in words_w_lang.iterrows():
-        word = word_row['word']
+    print "Modifying tokens..."
+    ii=0
+    for _,word_row in words_w_lang.iterrows():
+
+        if ii%100==0:
+            print "Tagging word",ii,"of",len(words_w_lang),"(",word_row['word'],")"
+
+        word = word_row['word'].encode('utf-8')
         lang = word_row['root language']
 
         for zz,tok in enumerate(tokens):
             if tok==word:
                 tokens[zz] = '<span class="'+languages_key[lang]+'">'+word+'</span>'
 
+        ii += 1
+
+    print "done"
+
+    print "Cleaning up..."
     for zz,tok in enumerate(tokens):
         if 'chapter' in tok:
             tokens[zz] = '</p><p>' + tokens[zz]
+    print "done"
 
     fulltext = ' '.join(tokens)
 
@@ -78,7 +92,7 @@ def gen_html_file(csvfile,htmlfile):
 def to_html(htmlfile,s):
     with open(htmlfile,'w') as f:
         f.write("<p>")
-        f.write(s)
+        f.write(s.encode('utf-8'))
         f.write("</p>")
 
 
@@ -194,6 +208,11 @@ def export_language_file(csvfile_lang):
                 etym = dd.get_text()
                 # etymology is the value
                 matching_words[this_word] = etym
+
+            elif the_word[0:2]==this_word[0:2]:
+                etym = dd.get_text()
+                matching_words[this_word] = etym
+
     
         if the_word in matching_words.keys():
             # match!
@@ -210,7 +229,10 @@ def export_language_file(csvfile_lang):
     
             # check whether there IS a result
             if len(etymology_grid_gt0)>0:
+
+                # etymology_grid_gt0 contains the ranked order of each language. min means it comes first.
                 first_lang_ref = min(etymology_grid_gt0)
+                last_lang_ref = max(etymology_grid_gt0)
     
                 # what language are we using? (index)
                 the_language_index = etymology_grid.index(first_lang_ref)
@@ -219,7 +241,7 @@ def export_language_file(csvfile_lang):
                 the_language_name = languages[the_language_index]
     
                 print ""
-                print "Word %d of %d: %s"%(cc,len(wordlist),the_word)
+                print "Tagging word %d of %d: %s"%(cc,len(wordlist),the_word)
     
                 print the_word,":",the_language_name
 
