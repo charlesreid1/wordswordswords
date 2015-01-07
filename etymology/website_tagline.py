@@ -35,9 +35,10 @@ languages_key['Polish']             ='polish'
 languages_key['Turkish']            ='turkish'
 
 def main():
-    ## First, we want to export definition and language to a file.
-    ## But this takes a long time, and we only want to do it once.
-    #export_file(csvfile)
+    # First, we want to export definition and language to a file.
+    # This is expensive, if text is long. 
+    # Looks up each word on Online Etymology Dictionary.
+    export_file(csvfile)
 
     # Next, we want to read the text, tag it, export to html
     s = gen_html_file(csvfile,htmlfile)
@@ -68,9 +69,10 @@ def gen_html_file(csvfile,htmlfile):
         word = word_row['word'].encode('utf-8')
         lang = word_row['root language']
 
+        print "  Modifying token",word
         for zz,tok in enumerate(tokens):
-            if tok==word:
-                tokens[zz] = '<span class="'+languages_key[lang]+'">'+word+'</span>'
+            if tok.lower()==word.lower():
+                tokens[zz] = '<span class="'+languages_key[lang]+'">'+tok+'</span>'
 
         ii += 1
 
@@ -104,7 +106,7 @@ def open_text(text_file):
     returns textblob
     """
 
-    print "Opening copperfield..."
+    print "Opening text..."
     with open(text_file) as f:
         s = f.read()
     s = s.decode('utf-8')
@@ -174,6 +176,8 @@ def export_language_file(csvfile_lang):
     wordlist = list(words['word'].values)
 
     for cc,the_word in enumerate(wordlist):
+
+        the_word = the_word.lower()
     
         browser = mechanize.Browser()
         response = browser.open('http://www.etymonline.com/')
