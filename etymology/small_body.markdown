@@ -1,0 +1,1 @@
+Tagging word <span class="french">etymology</span> <span class="oldenglish">with</span> <span class="latin">Python</span> <span class="oldenglish">and</span> HTML .
