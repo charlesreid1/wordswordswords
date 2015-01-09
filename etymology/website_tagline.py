@@ -78,14 +78,20 @@ def gen_html_file(csvfile,htmlfile):
 
     print "done"
 
+
+
     print "Cleaning up..."
     for zz,tok in enumerate(tokens):
         if 'chapter' in tok:
-            tokens[zz] = '</p><p>' + tokens[zz]
+            tokens[zz] = '</p>\n<h2>' + tokens[zz] + '<h2>\n<p>'
+
     print "done"
 
-    fulltext = ' '.join(tokens)
 
+
+    #to_html(htmlfile,tokens)
+
+    fulltext = ' '.join(tokens)
     to_html(htmlfile,fulltext)
 
 
