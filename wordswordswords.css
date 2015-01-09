@@ -4,7 +4,8 @@ ttp://colorbrewer2.org/
 */
 
 span.oldenglish, span.welsh, span.irish {
-    background-color:#ffffcc;
+    /*background-color:#ffffcc;*/
+    background-color:#ccc;
     color:#000;
 }
 
@@ -34,7 +35,6 @@ span.norse, span.oldnorse {
 
 span.german, span.germanic { 
     background-color:#df65b0;
-    color:#000;
 }
 
 span.slavonic, span.arabic, span.polish, span.turkish, span.sanskrit { 
