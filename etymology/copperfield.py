@@ -10,43 +10,14 @@ import time
 logging.basicConfig(filename='copperfield.log',level=logging.DEBUG)
 
 text = '../data/copperfield_ch1.txt'
-
+copperfield_html_file = 'gutenberg/copperfield.html'
 #copperfield_html_url = 'http://www.gutenberg.org/files/766/766-h/766-h.htm'
-copperfield_html_url = 'gutenberg/copperfield.html'
-
-## ch 1
-#csvfile = 'csv_copperfieldch1_words.csv'
-#htmlfile = 'copperfield1_body.html'
 
 # whole thing
 csvfile = 'csv_copperfield_words.csv'
 htmlfile = 'copperfield_body.html'
 
-languages = ['French','Greek','Latin', \
-             'Sanskrit','Norse','Old Norse','German', \
-             'Dutch','Welsh','Irish','Old English','Russian', \
-             'Slavonic','American English','Arabic','Spanish','Polish','Turkish']
-
-languages_key = {}
-languages_key['French']             ='french'
-languages_key['Greek']              ='greek'
-languages_key['Latin']              ='latin'
-languages_key['Sanskrit']           ='sanskrit'
-languages_key['Norse']              ='norse'
-languages_key['Old Norse']          ='oldnorse'
-languages_key['German']             ='german'
-languages_key['Germanic']           ='germanic'
-languages_key['Dutch']              ='dutch'
-languages_key['Welsh']              ='welsh'
-languages_key['Irish']              ='irish'
-languages_key['Old English']        ='oldenglish'
-languages_key['Russian']            ='russian'
-languages_key['Slavonic']           ='slavonic'
-languages_key['American English']   ='americanenglish'
-languages_key['Arabic']             ='arabic'
-languages_key['Spanish']            ='spanish'
-languages_key['Polish']             ='polish'
-languages_key['Turkish']            ='turkish'
+from languages import languages, languages_key
 
 def main():
     # First, we want to export definition and language to a file.
@@ -95,7 +66,7 @@ def gen_html_file(csvfile,htmlfile):
     #html_doc = response.read()
 
     # save file locally
-    with open('gutenberg/copperfield.html','r') as f:
+    with open(copperfield_html_file,'r') as f:
         html_doc = f.read()
 
     soup = BeautifulSoup(html_doc)
@@ -104,9 +75,11 @@ def gen_html_file(csvfile,htmlfile):
 
     # ------
     # title and author
-    h1tags = [h1 for h1 in soup.findAll('h1',text=True)]
-    title = h1tags[0].string
-    author = re.sub('By ','',h1tags[1].string)
+    titletag = soup.findAll('h1',text=True)[0]
+    title = titletag.string
+
+    authortag = soup.findAll('h2',text=True)[0]
+    author = re.sub('By ','',authortag.string)
 
 
 
@@ -288,7 +261,20 @@ def export_word_file(csvfile_def,do_definitions):
         d = {}
         d['word'] = the_word.encode('utf-8')
         d['word count'] = wc[the_word]
+
+        d['root language']=''
+        d['second language']=''
+        d['ranked languages']=''
+
+        if do_definitions:
+            if len(word)>2:
+                deff = Word(word).definitions
+                if deff <> []:
+                    definition = "; ".join(deff)
+                    d['definition'] = definition 
+
         words = words.append([d])
+
     print "done"
     
     print "Reindex according to word count ranking..."
@@ -296,23 +282,8 @@ def export_word_file(csvfile_def,do_definitions):
     words.index = range(1,len(words)+1)
     print "done"
     
-    if do_definitions:
-        print "Getting definitions of words..."
-        words['definition']=''
-        for word in words['word'].values:
-            if len(word)>2:
-                deff = Word(word).definitions
-                if deff <> []:
-                    definition = "; ".join(deff)
-                    words['definition'][words['word']==word] = definition
-        print "done"
-
-    words['root language']=''
-    words['second language']=''
-    words['ranked languages']=''
-
     print "Exporting to file..."
-    words.to_csv(csvfile_def,na_rep='')
+    words.to_csv(csvfile_def,na_rep='',index=False)
     print "done"
 
 
@@ -389,27 +360,7 @@ def export_language_file(csvfile_lang):
                 # yay!
                 found_result = True
 
-
-
-            '''
-            elif this_word.lower() in the_word.lower() or the_word.lower() in this_word.lower():
-                # We have a near match!
-
-                # key is the_word 
-                # or 
-                # key is this_word
-
-                # get etymology from the dd tag
-                # corresponding to our dt tag
-                etym = dd.get_text()
-
-                # etymology is the value
-                matching_words[this_word] = etym
-
-                # yay!
-                found_result = True
-            '''
-
+                break
 
 
         # Now check for common suffixes...
@@ -424,10 +375,16 @@ def export_language_file(csvfile_lang):
             # 
             # so use .split('.')[0] (first token before .)
             #
-            unsimilar_synset = [syn.name() for syn in Word(the_word).synsets]
-            unsplit_synset = [s for s in unsimilar_synset if s.name()[:3]==the_word[:3]]
-            ununique_synset = [s.split('.')[0] for s in unsplit_synset]
-            synset = list(set(ununique_synset))
+
+            synset = Word(the_word).synsets
+            synset_strings = [syn.name().split('.')[0] for syn in synset]
+
+            final_synset = []
+            for ss,sss in zip(synset,synset_strings):
+                if sss[:3] == the_word[:3]:
+                    final_synset.append(sss)
+
+            final_synset = list(set(final_synset))
 
             # Look for synonyms
             # in each search result
@@ -441,43 +398,25 @@ def export_language_file(csvfile_lang):
                 this_word = this_word_full.split(' ')[:-2]
                 this_word = ''.join(this_word)
 
-                if the_word.lower()==this_word.lower():
-                    # We have an exact match!
+                for syn in final_synset:
+                    if syn.lower() == this_word.lower():
+                        # We have an exact match!
 
-                    # key is the_word 
-                    # or 
-                    # key is this_word
+                        # key is the_word 
+                        # or 
+                        # key is this_word
 
-                    # get etymology from the dd tag
-                    # corresponding to our dt tag
-                    etym = dd.get_text()
+                        # get etymology from the dd tag
+                        # corresponding to our dt tag
+                        etym = dd.get_text()
 
-                    # etymology is the value
-                    matching_words[this_word] = etym
+                        # etymology is the value
+                        matching_words[this_word] = etym
 
-                    # yay!
-                    found_result = True
+                        # yay!
+                        found_result = True
 
-
-                '''
-                elif this_word.lower() in the_word.lower() or the_word.lower() in this_word.lower():
-                    # We have a near match!
-
-                    # key is the_word 
-                    # or 
-                    # key is this_word
-
-                    # get etymology from the dd tag
-                    # corresponding to our dt tag
-                    etym = dd.get_text()
-
-                    # etymology is the value
-                    matching_words[this_word] = etym
-
-                    # yay!
-                    found_result = True
-                '''
-
+                        break
 
 
         # if found_result is False,
@@ -500,7 +439,24 @@ def export_language_file(csvfile_lang):
                 etymology = matching_words[the_word]
 
                 # create a grid with location (in etymology) of each language's reference.
-                etymology_grid = [etymology.index(lang) if lang in etymology else -1 for lang in languages]
+                ## old way (incorrect, 'Germanic' always flags 'German' too)
+                #etymology_grid = [etymology.index(lang) if lang in etymology else -1 for lang in languages]
+                etymology_grid = []
+
+                for lang in languages:
+
+                    # need to do re
+                    # need to compile these in a list
+
+                    m = re.search(lang+r'\b', etymology)
+
+                    # double check if N is actually Old N
+                    n = re.search('Old '+lang+r'\b', etymology)
+
+                    if (m and not n):
+                        etymology_grid.append( m.start() )
+                    else:
+                        etymology_grid.append(-1)
 
                 # each word is tagged with whatever language 
                 # is referenced FIRST in the etymology
@@ -554,9 +510,9 @@ def export_language_file(csvfile_lang):
 
                     print the_word,":",language1_name
 
-                    words['root language'][words['word']==the_word]   = language1_name
-                    words['second language'][words['word']==the_word] = language2_name
-                    words['ranked languages'][words['word']==the_word] = ",".join(ranked_langs)
+                    words.loc[words['word']==the_word,'root language'] = language1_name
+                    words.loc[words['word']==the_word,'second language'] = language2_name
+                    words.loc[words['word']==the_word,'ranked languages'] = ",".join(ranked_langs)
 
         if cc%50==0:
             print "Exporting to file..."

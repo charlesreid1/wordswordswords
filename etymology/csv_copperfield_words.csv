@@ -1,405 +1,405 @@
 ,Unnamed: 0,word,word count,root language,second language,ranked languages
 0,1,the,174,,,
-1,2,and,146,,,
-2,3,a,125,,,
-3,4,of,124,,,
-4,5,to,113,,,
+1,2,and,146,English,Germanic,"English,Germanic,German,Old Norse,Old French,French,Greek,Latin,Norse,Sanskrit"
+2,3,a,125,French,,French
+3,4,of,124,German,Old Norse,"German,Old Norse,Greek,Norse,Old French,French,Latin,Sanskrit"
+4,5,to,113,Germanic,Old Norse,"Germanic,Old Norse,Norse,Old French,French,English,Greek,Latin,Sanskrit,German"
 5,6,my,101,,,
 6,7,her,88,,,
-7,8,was,86,,,
-8,9,in,80,,,
+7,8,was,86,Germanic,Latin,"Germanic,Latin,German,Old French,French,Greek,Sanskrit,Old Norse,Norse"
+8,9,in,80,French,,French
 9,10,i,77,,,
-10,11,that,67,,,
-11,12,mother,58,,,
-12,13,she,58,,,
-13,14,he,55,,,
-14,15,it,54,,,
-15,16,as,49,,,
+10,11,that,67,Old Norse,Old French,"Old Norse,Old French,French,Greek,Latin,Norse,Sanskrit"
+11,12,mother,58,Old French,French,"Old French,French"
+12,13,she,58,Latin,Greek,"Latin,Greek,French,Old French"
+13,14,he,55,German,Old Norse,"German,Old Norse,Old French,French,Greek,Latin,Norse,Sanskrit,Germanic"
+14,15,it,54,Old French,French,"Old French,French,Greek,Latin"
+15,16,as,49,Greek,Old French,"Greek,Old French,French"
 16,17,betsey,48,,,
 17,18,miss,47,,,
-18,19,at,45,,,
+18,19,at,45,French,,French
 19,20,said,44,,,
 20,21,had,43,,,
-21,22,with,40,,,
-22,23,on,33,,,
-23,24,have,31,,,
-24,25,you,30,,,
-25,26,be,28,,,
-26,27,by,28,,,
+21,22,with,40,English,Germanic,"English,Germanic,Old Norse,Latin,Old French,French,Greek,Norse,Sanskrit,German"
+22,23,on,33,Sanskrit,Norse,"Sanskrit,Norse,Latin,Old French,French,Greek,Old Norse"
+23,24,have,31,Old Norse,Greek,"Old Norse,Greek,Norse,Old French,German,French,Latin,Sanskrit"
+24,25,you,30,Germanic,Greek,"Germanic,Greek,German,Old French,French,Latin,Sanskrit,Old Norse,Norse"
+25,26,be,28,Norse,Latin,"Norse,Latin,Germanic,Greek,Old French,French,Old Norse,German,Sanskrit"
+26,27,by,28,Old Norse,Old French,"Old Norse,Old French,French,Greek,Latin,Norse,Sanskrit"
 27,28,mr,27,,,
 28,29,been,26,,,
 29,30,but,25,,,
-30,31,for,25,,,
-31,32,his,24,,,
+30,31,for,25,Old Norse,Old French,"Old Norse,Old French,French,Greek,Latin,Norse,Sanskrit"
+31,32,his,24,Greek,Old French,"Greek,Old French,French"
 32,33,do,23,,,
-33,34,aunt,22,,,
+33,34,aunt,22,French,Greek,"French,Greek,Old French,Latin,Germanic,English,Old Norse,Sanskrit,American English,German,Norse"
 34,35,not,21,,,
 35,36,there,21,,,
-36,37,were,20,,,
-37,38,any,19,,,
+36,37,were,20,French,,French
+37,38,any,19,Latin,Old Norse,"Latin,Old Norse,Old French,French,Greek,Sanskrit,Norse"
 38,39,s,19,,,
 39,40,an,18,,,
-40,41,me,18,,,
+40,41,me,18,English,American English,"English,American English,Germanic,German,Old Norse,Old French,Irish,French,Welsh,Latin,Greek,Norse,Sanskrit,Old English"
 41,42,n't,18,,,
-42,43,one,18,,,
-43,44,this,18,,,
-44,45,him,17,,,
-45,46,if,17,,,
+42,43,one,18,American English,Old Norse,"American English,Old Norse,German,Greek,Norse,Old French,French,English,Latin,Sanskrit,Germanic"
+43,44,this,18,Sanskrit,German,"Sanskrit,German,Old French,French,Greek,Latin,Old Norse,Norse"
+44,45,him,17,Old French,French,"Old French,French,Greek"
+45,46,if,17,Latin,Norse,"Latin,Norse,Old French,French,Greek,Sanskrit,Old Norse"
 46,47,ma'am,17,,,
-47,48,again,16,,,
+47,48,again,16,Old French,Latin,"Old French,Latin,French,Greek"
 48,49,chillip,16,,,
 49,50,copperfield,16,,,
 50,51,out,16,,,
-51,52,some,16,,,
-52,53,well,16,,,
-53,54,when,16,,,
-54,55,or,15,,,
-55,56,very,14,,,
-56,57,could,13,,,
-57,58,from,13,,,
-58,59,head,13,,,
-59,60,is,13,,,
+51,52,some,16,Norse,Sanskrit,"Norse,Sanskrit,Old French,Old Norse,French,Greek,Latin"
+52,53,well,16,French,,French
+53,54,when,16,German,Old Norse,"German,Old Norse,Old French,French,Greek,Latin,Norse,Sanskrit"
+54,55,or,15,Sanskrit,Norse,"Sanskrit,Norse,French,Old French,Latin,Greek"
+55,56,very,14,French,Old French,"French,Old French,Norse,Old Norse,Latin,German,Sanskrit,English,Germanic,Greek"
+56,57,could,13,French,,French
+57,58,from,13,Sanskrit,Latin,"Sanskrit,Latin,Old French,French,Greek"
+58,59,head,13,French,,French
+59,60,is,13,Norse,Old Norse,"Norse,Old Norse,Sanskrit,Latin,Greek,Old French,French,German"
 60,61,no,13,,,
-61,62,upon,13,,,
-62,63,who,13,,,
+61,62,upon,13,French,,French
+62,63,who,13,German,Old Norse,"German,Old Norse,Norse,Old French,Welsh,French,American English,Greek,Latin,Sanskrit,English,Germanic"
 63,64,all,12,,,
 64,65,returned,12,,,
-65,66,so,12,,,
-66,67,what,12,,,
-67,68,about,11,,,
-68,69,fire,11,,,
+65,66,so,12,Germanic,Old Norse,"Germanic,Old Norse,Norse,Old French,French,Greek,German,Sanskrit,Latin"
+66,67,what,12,German,Latin,"German,Latin,Old Norse,Old French,French,Greek,Sanskrit,Norse"
+67,68,about,11,Old French,French,"Old French,French"
+68,69,fire,11,Germanic,American English,"Germanic,American English,English,Sanskrit,German,Old French,Welsh,French,Greek,Latin,Old Norse,Norse"
 69,70,having,11,,,
 70,71,down,10,,,
 71,72,herself,10,,,
-72,73,like,10,,,
-73,74,much,10,,,
-74,75,never,10,,,
-75,76,they,10,,,
-76,77,we,10,,,
-77,78,will,10,,,
-78,79,house,9,,,
+72,73,like,10,Greek,Sanskrit,"Greek,Sanskrit,Old French,French,Latin"
+73,74,much,10,Old French,French,"Old French,French"
+74,75,never,10,Greek,Sanskrit,"Greek,Sanskrit,Norse,French,Latin,Old French"
+75,76,they,10,French,Old French,"French,Old French,Greek"
+76,77,we,10,German,Latin,"German,Latin,Old Norse,Old French,French,Greek,Sanskrit,Norse,Germanic"
+77,78,will,10,French,,French
+78,79,house,9,Old French,French,"Old French,French,Greek"
 79,80,little,9,,,
 80,81,must,9,,,
 81,82,peggotty,9,,,
-82,83,say,9,,,
-83,84,after,8,,,
+82,83,say,9,French,,French
+83,84,after,8,Latin,Old French,"Latin,Old French,Greek,French"
 84,85,being,8,,,
-85,86,did,8,,,
-86,87,girl,8,,,
+85,86,did,8,Old French,French,"Old French,French"
+86,87,girl,8,Greek,Old French,"Greek,Old French,French"
 87,88,know,8,,,
-88,89,nothing,8,,,
-89,90,such,8,,,
-90,91,too,8,,,
+88,89,nothing,8,French,,French
+89,90,such,8,Latin,German,"Latin,German,Old French,French,Greek,Sanskrit,Old Norse,Norse"
+90,91,too,8,Old French,French,"Old French,French"
 91,92,up,8,,,
-92,93,am,7,,,
-93,94,are,7,,,
+92,93,am,7,Latin,Sanskrit,"Latin,Sanskrit,Norse,Old French,Old Norse,German,French,Greek"
+93,94,are,7,French,Old French,"French,Old French"
 94,95,before,7,,,
 95,96,came,7,,,
-96,97,child,7,,,
-97,98,come,7,,,
-98,99,cotton,7,,,
-99,100,dear,7,,,
-100,101,good,7,,,
-101,102,how,7,,,
-102,103,into,7,,,
-103,104,lady,7,,,
-104,105,life,7,,,
-105,106,now,7,,,
-106,107,our,7,,,
-107,108,own,7,,,
-108,109,poor,7,,,
-109,110,which,7,,,
+96,97,child,7,Greek,Latin,"Greek,Latin,Old French,French"
+97,98,come,7,English,American English,"English,American English,Germanic,German,Old Norse,Old French,French,Greek,Latin,Norse,Sanskrit"
+98,99,cotton,7,French,,French
+99,100,dear,7,Latin,German,"Latin,German,Old French,French,Greek,Sanskrit,Old Norse,Norse"
+100,101,good,7,French,,French
+101,102,how,7,Old French,French,"Old French,French"
+102,103,into,7,Old French,French,"Old French,French"
+103,104,lady,7,French,,French
+104,105,life,7,Greek,Sanskrit,"Greek,Sanskrit,Old French,French,Latin"
+105,106,now,7,German,Germanic,"German,Germanic,Old Norse,Greek,Norse,Old French,French,American English,Sanskrit,Latin,English"
+106,107,our,7,Norse,Sanskrit,"Norse,Sanskrit,Old French,French,Greek,Latin"
+107,108,own,7,French,,French
+108,109,poor,7,French,Old French,"French,Old French,Greek"
+109,110,which,7,Latin,German,"Latin,German,Old French,French,Greek,Sanskrit,Old Norse,Norse"
 110,111,asked,6,,,
 111,112,born,6,,,
 112,113,cried,6,,,
-113,114,father,6,,,
-114,115,himself,6,,,
-115,116,made,6,,,
-116,117,more,6,,,
-117,118,over,6,,,
-118,119,quite,6,,,
+113,114,father,6,Germanic,English,"Germanic,English,German,Norse,Old Norse,Old French,French,American English,Greek,Latin,Sanskrit"
+114,115,himself,6,French,,French
+115,116,made,6,Old French,French,"Old French,French"
+116,117,more,6,American English,Latin,"American English,Latin,German,Old French,English,French,Germanic,Greek,Sanskrit,Old Norse,Norse"
+117,118,over,6,Sanskrit,Norse,"Sanskrit,Norse,Old French,French,Greek,Latin"
+118,119,quite,6,French,,French
 119,120,sat,6,,,
 120,121,side,6,,,
-121,122,them,6,,,
-122,123,these,6,,,
-123,124,time,6,,,
+121,122,them,6,French,Old French,"French,Old French"
+122,123,these,6,French,,French
+123,124,time,6,Sanskrit,Greek,"Sanskrit,Greek,Latin,Old French,French"
 124,125,your,6,,,
 125,126,afterwards,5,,,
-126,127,another,5,,,
+126,127,another,5,French,,French
 127,128,baby,5,,,
 128,129,can,5,,,
 129,130,coming,5,,,
 130,131,cry,5,,,
 131,132,david,5,,,
-132,133,else,5,,,
+132,133,else,5,Latin,Sanskrit,"Latin,Sanskrit,Greek,Old French,French"
 133,134,looked,5,,,
 134,135,looking,5,,,
-135,136,old,5,,,
-136,137,only,5,,,
-137,138,other,5,,,
+135,136,old,5,English,Old Norse,"English,Old Norse,German,Norse,Sanskrit,Old French,French,Germanic,Greek,Latin"
+136,137,only,5,Latin,Greek,"Latin,Greek,Old French,French"
+137,138,other,5,English,Germanic,"English,Germanic,Sanskrit,German,Old French,French,Greek,Latin,Old Norse,Norse"
 138,139,parlour,5,,,
-139,140,part,5,,,
-140,141,room,5,,,
-141,142,slowly,5,,,
+139,140,part,5,French,Old French,"French,Old French"
+140,141,room,5,French,,French
+141,142,slowly,5,French,,French
 142,143,took,5,,,
 143,144,trotwood,5,,,
-144,145,until,5,,,
+144,145,until,5,French,Norse,"French,Norse,Old French,Greek,Sanskrit,Latin"
 145,146,upstairs,5,,,
-146,147,way,5,,,
-147,148,window,5,,,
+146,147,way,5,Old French,French,"Old French,French"
+147,148,window,5,Latin,French,"Latin,French,Sanskrit,Greek,Old French"
 148,149,word,5,,,
-149,150,world,5,,,
-150,151,almost,4,,,
-151,152,back,4,,,
+149,150,world,5,German,American English,"German,American English,Norse,Old Norse,Old French,Germanic,French,Greek,Latin,Sanskrit,English"
+150,151,almost,4,French,,French
+151,152,back,4,Old Norse,Old French,"Old Norse,Old French,French,Greek,Norse,Sanskrit,Latin,Germanic,English,German,American English"
 152,153,began,4,,,
-153,154,bent,4,,,
+153,154,bent,4,Latin,Old French,"Latin,Old French,French,Greek"
 154,155,birth,4,,,
 155,156,called,4,,,
-156,157,door,4,,,
-157,158,each,4,,,
-158,159,even,4,,,
-159,160,ever,4,,,
+156,157,door,4,Old Norse,German,"Old Norse,German,Germanic,Latin,Norse,Old French,French,Greek,Sanskrit,English"
+157,158,each,4,French,,French
+158,159,even,4,French,,French
+159,160,ever,4,Old French,French,"Old French,French"
 160,161,feet,4,,,
-161,162,five,4,,,
+161,162,five,4,Germanic,English,"Germanic,English,German,Norse,Old Norse,Old French,Welsh,French,Latin,Greek,Sanskrit,American English"
 162,163,friday,4,,,
 163,164,here,4,,,
-164,165,light,4,,,
-165,166,make,4,,,
-166,167,manner,4,,,
-167,168,mean,4,,,
-168,169,moment,4,,,
-169,170,myself,4,,,
-170,171,name,4,,,
-171,172,night,4,,,
-172,173,once,4,,,
+164,165,light,4,Latin,Old French,"Latin,Old French,French,Greek,Sanskrit"
+165,166,make,4,German,Old Norse,"German,Old Norse,Old French,French,Greek,Latin,Norse,Sanskrit"
+166,167,manner,4,French,Old French,"French,Old French,Norse,Sanskrit,Greek,Latin"
+167,168,mean,4,French,Old French,"French,Old French"
+168,169,moment,4,French,Old French,"French,Old French,Sanskrit,Greek,Latin"
+169,170,myself,4,French,,French
+170,171,name,4,French,,French
+171,172,night,4,German,Germanic,"German,Germanic,American English,Old Norse,Latin,Old French,Old English,French,English,Greek,Sanskrit,Norse,Irish,Welsh"
+172,173,once,4,Old French,French,"Old French,French"
 173,174,really,4,,,
 174,175,rookery,4,,,
-175,176,saw,4,,,
-176,177,see,4,,,
-177,178,short,4,,,
-178,179,since,4,,,
+175,176,saw,4,French,,French
+176,177,see,4,French,Old French,"French,Old French"
+177,178,short,4,Norse,Sanskrit,"Norse,Sanskrit,Greek,Latin,Old French,French,Germanic,German,Old Norse"
+178,179,since,4,French,,French
 179,180,sitting,4,,,
-180,181,soon,4,,,
-181,182,strange,4,,,
+180,181,soon,4,Sanskrit,Old French,"Sanskrit,Old French,Norse,French,Latin,Greek"
+181,182,strange,4,French,Old French,"French,Old French,Latin,Greek"
 182,183,taking,4,,,
-183,184,tea,4,,,
-184,185,their,4,,,
-185,186,then,4,,,
-186,187,think,4,,,
-187,188,two,4,,,
+183,184,tea,4,Greek,German,"Greek,German,Sanskrit,French,Old French,Norse,Germanic,Old Norse,Latin,English"
+184,185,their,4,French,Old French,"French,Old French"
+185,186,then,4,Norse,Old French,"Norse,Old French,French,Latin,Greek,Sanskrit"
+186,187,think,4,Norse,Sanskrit,"Norse,Sanskrit,Old French,French,Latin,Greek"
+187,188,two,4,Germanic,English,"Germanic,English,German,Sanskrit,Old Norse,Old French,French,Greek,Latin,Norse,American English"
 188,189,went,4,,,
-189,190,whether,4,,,
-190,191,whom,4,,,
-191,192,yet,4,,,
-192,193,agitation,3,,,
+189,190,whether,4,Old Norse,German,"Old Norse,German,Norse,Latin,Sanskrit,Old French,French,Greek,Germanic"
+190,191,whom,4,Old French,French,"Old French,French"
+191,192,yet,4,Greek,Latin,"Greek,Latin,French,Old French"
+192,193,agitation,3,French,Old French,"French,Old French"
 193,194,alone,3,,,
-194,195,always,3,,,
-195,196,because,3,,,
+194,195,always,3,French,,French
+195,196,because,3,French,,French
 196,197,birds,3,,,
-197,198,bonnet,3,,,
+197,198,bonnet,3,French,Old French,"French,Old French,Greek"
 198,199,bought,3,,,
-199,200,caul,3,,,
-200,201,chair,3,,,
-201,202,childish,3,,,
+199,200,caul,3,French,Greek,"French,Greek,Old French"
+200,201,chair,3,French,Old French,"French,Old French,Greek"
+201,202,childish,3,French,,French
 202,203,christian,3,,,
-203,204,comfortable,3,,,
+203,204,comfortable,3,French,,French
 204,205,done,3,,,
-205,206,ear,3,,,
+205,206,ear,3,Old Norse,Norse,"Old Norse,Norse,Sanskrit,Latin,Old French,French,Greek"
 206,207,ears,3,,,
 207,208,either,3,,,
-208,209,except,3,,,
+208,209,except,3,French,Old French,"French,Old French"
 209,210,eyes,3,,,
-210,211,face,3,,,
-211,212,family,3,,,
-212,213,fell,3,,,
+210,211,face,3,French,Sanskrit,"French,Sanskrit,Old French,Latin,Greek"
+211,212,family,3,French,Greek,"French,Greek,Latin,Old French"
+212,213,fell,3,Old Norse,Norse,"Old Norse,Norse,Old French,French,Latin,Greek,Sanskrit"
 213,214,fender,3,,,
 214,215,first,3,,,
 215,216,gave,3,,,
 216,217,go,3,,,
-217,218,great,3,,,
-218,219,hair,3,,,
+217,218,great,3,Old Norse,German,"Old Norse,German,Norse,Old French,French,Greek,Latin,Sanskrit"
+218,219,hair,3,German,Latin,"German,Latin,Sanskrit,Old French,French,Greek,Norse,Old Norse"
 219,220,hands,3,,,
 220,221,handsome,3,,,
 221,222,happy,3,,,
 222,223,has,3,,,
-223,224,hope,3,,,
-224,225,hour,3,,,
+223,224,hope,3,Latin,Old French,"Latin,Old French,French,Greek,Norse,Sanskrit"
+224,225,hour,3,French,Greek,"French,Greek,Old French,Sanskrit,Latin"
 225,226,hours,3,,,
-226,227,indeed,3,,,
+226,227,indeed,3,Old French,French,"Old French,French"
 227,228,jewellers,3,,,
 228,229,knew,3,,,
-229,230,last,3,,,
+229,230,last,3,Greek,Norse,"Greek,Norse,Old French,French,Sanskrit,Latin"
 230,231,left,3,,,
-231,232,long,3,,,
-232,233,low,3,,,
+231,232,long,3,Greek,Old Norse,"Greek,Old Norse,Old French,French,Latin,Norse,Sanskrit"
+232,233,low,3,Old French,French,"Old French,French"
 233,234,married,3,,,
 234,235,may,3,,,
-235,236,might,3,,,
+235,236,might,3,Greek,Old Norse,"Greek,Old Norse,Old French,French,Latin,Norse,Sanskrit"
 236,237,mine,3,,,
 237,238,months,3,,,
 238,239,off,3,,,
-239,240,perhaps,3,,,
-240,241,present,3,,,
-241,242,question,3,,,
+239,240,perhaps,3,French,,French
+240,241,present,3,French,Old French,"French,Old French"
+241,242,question,3,French,,French
 242,243,reached,3,,,
 243,244,second,3,,,
-244,245,shake,3,,,
-245,246,shall,3,,,
-246,247,sherry,3,,,
-247,248,sit,3,,,
-248,249,something,3,,,
+244,245,shake,3,Latin,Greek,"Latin,Greek,Old French,Old Norse,Norse,French,Sanskrit"
+245,246,shall,3,Sanskrit,German,"Sanskrit,German,Old French,French,Greek,Latin,Old Norse,Norse"
+246,247,sherry,3,French,,French
+247,248,sit,3,Latin,German,"Latin,German,Old French,Germanic,French,Greek,Sanskrit,Old Norse,Norse"
+248,249,something,3,French,,French
 249,250,still,3,,,
-250,251,suppose,3,,,
-251,252,sure,3,,,
-252,253,than,3,,,
-253,254,therefore,3,,,
-254,255,those,3,,,
+250,251,suppose,3,French,Old French,"French,Old French"
+251,252,sure,3,French,Old French,"French,Old French,Greek"
+252,253,than,3,Latin,Old French,"Latin,Old French,French,Greek"
+253,254,therefore,3,Greek,French,"Greek,French,Old French"
+254,255,those,3,French,,French
 255,256,told,3,,,
 256,257,tut,3,,,
-257,258,unknown,3,,,
+257,258,unknown,3,French,,French
 258,259,walked,3,,,
-259,260,where,3,,,
-260,261,while,3,,,
-261,262,why,3,,,
+259,260,where,3,Germanic,Latin,"Germanic,Latin,German,Old French,French,Greek,Sanskrit,Old Norse,Norse"
+260,261,while,3,Sanskrit,Latin,"Sanskrit,Latin,Greek,Old French,French"
+261,262,why,3,Sanskrit,Latin,"Sanskrit,Latin,Old French,French,Greek"
 262,263,within,3,,,
 263,264,without,3,,,
 264,265,would,3,,,
 265,266,years,3,,,
-266,267,yes,3,,,
-267,268,absence,2,,,
-268,269,afraid,2,,,
-269,270,afternoon,2,,,
+266,267,yes,3,Old French,French,"Old French,French"
+267,268,absence,2,French,Old French,"French,Old French"
+268,269,afraid,2,French,Old French,"French,Old French"
+269,270,afternoon,2,French,,French
 270,271,against,2,,,
 271,272,ah,2,,,
 272,273,anybody,2,,,
-273,274,anything,2,,,
-274,275,appearance,2,,,
+273,274,anything,2,Old French,French,"Old French,French"
+274,275,appearance,2,French,Old French,"French,Old French"
 275,276,arms,2,,,
-276,277,bear,2,,,
-277,278,bed,2,,,
-278,279,beg,2,,,
-279,280,believe,2,,,
+276,277,bear,2,Old Norse,German,"Old Norse,German,Greek,Norse,Old French,English,Germanic,French,Sanskrit,Latin,American English"
+277,278,bed,2,Germanic,English,"Germanic,English,Old Norse,German,Old French,French,Latin,Greek,Norse,Sanskrit"
+278,279,beg,2,Greek,Latin,"Greek,Latin,Old French,French"
+279,280,believe,2,Sanskrit,Old French,"Sanskrit,Old French,French,Greek,Latin"
 280,281,better,2,,,
-281,282,bless,2,,,
-282,283,blow,2,,,
+281,282,bless,2,Latin,Greek,"Latin,Greek,Old French,French"
+282,283,blow,2,Old Norse,Old French,"Old Norse,Old French,French,Greek,Latin,Norse,Sanskrit"
 283,284,both,2,,,
-284,285,bow,2,,,
-285,286,boy,2,,,
+284,285,bow,2,French,Greek,"French,Greek,Old French"
+285,286,boy,2,French,Greek,"French,Greek,Old French,German,Germanic,Norse,Old Norse,Sanskrit,Latin"
 286,287,breaking,2,,,
-287,288,bright,2,,,
-288,289,burst,2,,,
+287,288,bright,2,Norse,Latin,"Norse,Latin,Sanskrit,Old French,Old Norse,French,Greek"
+288,289,burst,2,German,Old Norse,"German,Old Norse,Old French,French,Greek,Latin,Norse,Sanskrit"
 289,290,call,2,,,
-290,291,calm,2,,,
-291,292,candle,2,,,
+290,291,calm,2,French,Greek,"French,Greek,Old French"
+291,292,candle,2,Latin,Old French,"Latin,Old French,Greek,Old Norse,Sanskrit,Norse,French"
 292,293,carried,2,,,
-293,294,clock,2,,,
+293,294,clock,2,Greek,Latin,"Greek,Latin,Norse,Old Norse,Sanskrit,Old French,French"
 294,295,confidences,2,,,
-295,296,congratulate,2,,,
+295,296,congratulate,2,French,,French
 296,297,consequently,2,,,
-297,298,consideration,2,,,
-298,299,cork,2,,,
+297,298,consideration,2,French,Old French,"French,Old French"
+298,299,cork,2,Greek,Old French,"Greek,Old French,French"
 299,300,corked,2,,,
 300,301,dare,2,,,
 301,302,dark,2,,,
-302,303,day,2,,,
-303,304,dead,2,,,
-304,305,deal,2,,,
-305,306,death,2,,,
+302,303,day,2,Germanic,English,"Germanic,English,German,Old Norse,Old French,French,Greek,Norse,Sanskrit,Latin"
+303,304,dead,2,German,Old Norse,"German,Old Norse,Old French,French,Greek,Latin,Norse,Sanskrit"
+304,305,deal,2,French,Old French,"French,Old French,Greek"
+305,306,death,2,Old Norse,Norse,"Old Norse,Norse,Old French,French,Greek,Latin,Sanskrit"
 306,307,died,2,,,
-307,308,doctor,2,,,
+307,308,doctor,2,French,Old Norse,"French,Old Norse,Old French,Sanskrit,Latin,Norse,Greek"
 308,309,dog,2,,,
-309,310,doubt,2,,,
+309,310,doubt,2,French,Old French,"French,Old French,Latin,Greek"
 310,311,drawer,2,,,
-311,312,dress,2,,,
-312,313,earthly,2,,,
-313,314,effect,2,,,
-314,315,emphasis,2,,,
+311,312,dress,2,French,Old French,"French,Old French"
+312,313,earthly,2,French,,French
+313,314,effect,2,French,,French
+314,315,emphasis,2,Old French,French,"Old French,French"
 315,316,equally,2,,,
-316,317,evening,2,,,
+316,317,evening,2,French,,French
 317,318,exclaimed,2,,,
-318,319,expect,2,,,
-319,320,fact,2,,,
-320,321,faintly,2,,,
+318,319,expect,2,French,Old French,"French,Old French"
+319,320,fact,2,Old French,French,"Old French,French,Greek,Latin"
+320,321,faintly,2,French,,French
 321,322,faltered,2,,,
 322,323,fancy,2,,,
-323,324,fear,2,,,
+323,324,fear,2,German,Old Norse,"German,Old Norse,Latin,Norse,Old French,French,Germanic,Greek,Sanskrit"
 324,325,felt,2,,,
 325,326,few,2,,,
 326,327,folded,2,,,
-327,328,found,2,,,
-328,329,frown,2,,,
+327,328,found,2,French,Greek,"French,Greek,Old French,Norse,Latin,Sanskrit"
+328,329,frown,2,French,Old French,"French,Old French"
 329,330,garden,2,,,
-330,331,glance,2,,,
+330,331,glance,2,French,Old French,"French,Old French"
 331,332,gone,2,,,
 332,333,ha,2,,,
 333,334,half,2,,,
-334,335,ham,2,,,
-335,336,hamlet,2,,,
+334,335,ham,2,Old French,French,"Old French,French"
+335,336,hamlet,2,French,,French
 336,337,hand,2,,,
 337,338,higher,2,,,
 338,339,ill,2,,,
 339,340,immediately,2,,,
 340,341,india,2,,,
-341,342,indignation,2,,,
-342,343,instead,2,,,
-343,344,intend,2,,,
-344,345,irritation,2,,,
+341,342,indignation,2,French,Old French,"French,Old French"
+342,343,instead,2,Greek,Old French,"Greek,Old French,French"
+343,344,intend,2,French,Old French,"French,Old French,Latin,Norse,Greek,Sanskrit"
+344,345,irritation,2,French,Old French,"French,Old French"
 345,346,kept,2,,,
-346,347,knee,2,,,
+346,347,knee,2,English,American English,"English,American English,Germanic,Greek,German,Old French,French,Latin,Sanskrit,Old Norse,Norse"
 347,348,known,2,,,
 348,349,laid,2,,,
-349,350,lay,2,,,
-350,351,let,2,,,
-351,352,liberty,2,,,
+349,350,lay,2,French,Latin,"French,Latin,Greek,Old French"
+350,351,let,2,Latin,Sanskrit,"Latin,Sanskrit,Old French,French,Greek"
+351,352,liberty,2,French,Old French,"French,Old French"
 352,353,lighted,2,,,
 353,354,lived,2,,,
 354,355,ll,2,,,
-355,356,local,2,,,
+355,356,local,2,French,Old French,"French,Old French"
 356,357,look,2,,,
 357,358,matched,2,,,
 358,359,matters,2,,,
 359,360,meandering,2,,,
 360,361,meekest,2,,,
-361,362,mercy,2,,,
+361,362,mercy,2,French,Old French,"French,Old French"
 362,363,mind,2,,,
-363,364,minutes,2,,,
-364,365,modest,2,,,
-365,366,money,2,,,
+363,364,minutes,2,French,,French
+364,365,modest,2,French,Old French,"French,Old French"
+365,366,money,2,French,Old French,"French,Old French,Latin,Greek"
 366,367,nests,2,,,
-367,368,nobody,2,,,
-368,369,notwithstanding,2,,,
-369,370,nurse,2,,,
-370,371,o'clock,2,,,
-371,372,objection,2,,,
+367,368,nobody,2,French,,French
+368,369,notwithstanding,2,French,,French
+369,370,nurse,2,French,,French
+370,371,o'clock,2,French,,French
+371,372,objection,2,French,Old French,"French,Old French"
 372,373,offered,2,,,
 373,374,oh,2,,,
 374,375,partly,2,,,
-375,376,passage,2,,,
+375,376,passage,2,French,,French
 376,377,past,2,,,
-377,378,people,2,,,
-378,379,pleasure,2,,,
+377,378,people,2,French,,French
+378,379,pleasure,2,French,Old French,"French,Old French,Greek"
 379,380,pounds,2,,,
 380,381,preferred,2,,,
-381,382,presence,2,,,
-382,383,presentiment,2,,,
+381,382,presence,2,French,Old French,"French,Old French"
+382,383,presentiment,2,French,Old French,"French,Old French"
 383,384,progressing,2,,,
 384,385,put,2,,,
 385,386,putting,2,,,
-386,387,remembrance,2,,,
+386,387,remembrance,2,French,,French
 387,388,repeated,2,,,
 388,389,replied,2,,,
 389,390,resumed,2,,,
 390,391,rooks,2,,,
-391,392,seeing,2,,,
+391,392,seeing,2,Old French,French,"Old French,French"
 392,393,seen,2,,,
-393,394,seldom,2,,,
-394,395,separation,2,,,
-395,396,sharply,2,,,
+393,394,seldom,2,Greek,Norse,"Greek,Norse,Old French,French,Latin,Sanskrit"
+394,395,separation,2,French,Old French,"French,Old French"
+395,396,sharply,2,French,,French
 396,397,shillings,2,,,
 397,398,shocked,2,,,
 398,399,shook,2,,,
 399,400,should,2,,,
-400,401,show,2,,,
+400,401,show,2,Norse,Old French,"Norse,Old French,French,Greek,Latin,Sanskrit"
 401,402,sidled,2,,,
 402,403,six,2,,,
 403,404,skirt,2,,,
