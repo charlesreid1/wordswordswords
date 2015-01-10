@@ -17,31 +17,7 @@ dubliners_html_file = 'gutenberg/dubliners.html'
 csvfile = 'csv_dubliners_words.csv'
 htmlfile = 'dubliners_body.html'
 
-languages = ['French','Greek','Latin', \
-             'Sanskrit','Norse','Old Norse','German', \
-             'Dutch','Welsh','Irish','Old English','Russian', \
-             'Slavonic','American English','Arabic','Spanish','Polish','Turkish']
-
-languages_key = {}
-languages_key['French']             ='french'
-languages_key['Greek']              ='greek'
-languages_key['Latin']              ='latin'
-languages_key['Sanskrit']           ='sanskrit'
-languages_key['Norse']              ='norse'
-languages_key['Old Norse']          ='oldnorse'
-languages_key['German']             ='german'
-languages_key['Germanic']           ='germanic'
-languages_key['Dutch']              ='dutch'
-languages_key['Welsh']              ='welsh'
-languages_key['Irish']              ='irish'
-languages_key['Old English']        ='oldenglish'
-languages_key['Russian']            ='russian'
-languages_key['Slavonic']           ='slavonic'
-languages_key['American English']   ='americanenglish'
-languages_key['Arabic']             ='arabic'
-languages_key['Spanish']            ='spanish'
-languages_key['Polish']             ='polish'
-languages_key['Turkish']            ='turkish'
+from languages import languages, languages_key
 
 def main():
     # First, we want to export definition and language to a file.
@@ -99,9 +75,11 @@ def gen_html_file(csvfile,htmlfile):
 
     # ------
     # title and author
-    h1tags = [h1 for h1 in soup.findAll('h1',text=True)]
-    title = h1tags[0].string
-    author = re.sub('By ','',h1tags[1].string)
+    titletag = soup.findAll('h1',text=True)[0]
+    title = titletag.string
+
+    authortag = soup.findAll('h2',text=True)[0]
+    author = re.sub('By ','',authortag.string)
 
 
 
@@ -461,7 +439,24 @@ def export_language_file(csvfile_lang):
                 etymology = matching_words[the_word]
 
                 # create a grid with location (in etymology) of each language's reference.
-                etymology_grid = [etymology.index(lang) if lang in etymology else -1 for lang in languages]
+                ## old way (incorrect, 'Germanic' always flags 'German' too)
+                #etymology_grid = [etymology.index(lang) if lang in etymology else -1 for lang in languages]
+                etymology_grid = []
+
+                for lang in languages:
+
+                    # need to do re
+                    # need to compile these in a list
+
+                    m = re.search(lang+r'\b', etymology)
+
+                    # double check if N is actually Old N
+                    n = re.search('Old '+lang+r'\b', etymology)
+
+                    if (m and not n):
+                        etymology_grid.append( m.start() )
+                    else:
+                        etymology_grid.append(-1)
 
                 # each word is tagged with whatever language 
                 # is referenced FIRST in the etymology
