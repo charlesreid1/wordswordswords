@@ -69,10 +69,6 @@ def export_word_file(csvfile_def,do_definitions):
         all_text.append(tt.string)
 
     s = " ".join(all_text)
-    #s = s.decode("utf-8")
-    #s = s.encode("utf-8")
-    #s = s.decode('ascii')
-    #s = s.encode('ascii')
     s = unicode(s)
 
     t = TextBlob(s)
