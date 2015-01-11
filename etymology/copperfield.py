@@ -9,7 +9,7 @@ import time
 
 logging.basicConfig(filename='copperfield.log',level=logging.DEBUG)
 
-text = '../data/copperfield_ch1.txt'
+text = '../data/copperfield.txt'
 copperfield_html_file = 'gutenberg/copperfield.html'
 #copperfield_html_url = 'http://www.gutenberg.org/files/766/766-h/766-h.htm'
 
@@ -376,7 +376,10 @@ def export_language_file(csvfile_lang):
             # so use .split('.')[0] (first token before .)
             #
 
-            synset = Word(the_word).synsets
+            try:
+                synset = Word(the_word).synsets
+            except:
+                synset = None
             synset_strings = [syn.name().split('.')[0] for syn in synset]
 
             final_synset = []
