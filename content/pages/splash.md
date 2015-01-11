@@ -20,6 +20,8 @@ Words Words Words uses a couple of Python libraries to do its primary tasks: par
 * To process the resulting HTML, I'm using [Beautiful Soup](http://www.crummy.com/software/BeautifulSoup/bs4/doc/).
 * To deal with all the data resulting from these tasks, I'm using [Pandas](http://pandas.pydata.org/).
 * To tag each word, I'm just using Python's built-in ```list``` and ```string``` types.
+* To pull all of the tagged HTML, CSS stylesheets, and JS together, I'm using [Pelican](http://blog.getpelican.com/) 
+  (my preferred Python alternative to Ruby's Jekyll)
 
 ## Check out the code
 
