@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}{{ page.title }} &mdash; {{ SITENAME }}{% endblock %}
+{% block content %}
+<div>
+  <article role="article">
+    <header>
+      {% include '_includes/qr_code.html' %}
+      {% if page.headerstyle=='jumbotron' %}
+        <div class="jumbotron">
+            <h1>{{ page.title }}</h1>
+            <p>Tagging word <span class="french">etymology</span> <span class="oldenglish">with</span> <span class="latin">Python</span> <span class="oldenglish">and</span> HTML .</p>
+            <p>&nbsp;</p>
+        </div>
+
+      {% else %}
+        <h1 class="entry-title">{{ page.title }}</h1>
+      {% endif %}
+    </header>
+    {{ page.content }}
+  </article>
+</div>
+{% endblock %}
