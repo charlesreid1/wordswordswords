@@ -1,22 +1,125 @@
 {% extends 'base.html' %}
 {% block title %}{{ page.title }} &mdash; {{ SITENAME }}{% endblock %}
 {% block content %}
-<div>
-  <article role="article">
-    <header>
-      {% include '_includes/qr_code.html' %}
-      {% if page.headerstyle=='jumbotron' %}
-        <div class="jumbotron">
-            <h1>{{ page.title }}</h1>
-            <p>Tagging word <span class="french">etymology</span> <span class="oldenglish">with</span> <span class="latin">Python</span> <span class="oldenglish">and</span> HTML .</p>
-            <p>&nbsp;</p>
+
+{% include '_includes/qr_code.html' %}
+
+
+
+{#
+Page title
+#}
+
+
+{% if page.headerstyle=='jumbotron' %}
+    <div class="jumbotron">
+        <h1>{{ page.title }}</h1>
+        <p>Tagging word <span class="french">etymology</span> <span class="oldenglish">with</span> <span class="latin">Python</span> <span class="oldenglish">and</span> HTML .</p>
+        <p>&nbsp;</p>
+    </div>
+
+{% else %}
+    <h1 class="entry-title">{{ page.title }}</h1>
+{% endif %}
+
+
+
+
+{#
+Page content
+
+if page headerstyle is jumbotron,
+content is half page, half list of books.
+#}
+
+{% if page.headerstyle == 'jumbotron' %}
+
+<div class="row-fluid">
+
+    <div class="col-md-6">
+        {{ page.content }}
+    </div>
+    <div class="col-md-6">
+
+
+        <div class="well">
+            <h2>Tagged Books</h2>
+            <p><a href="#" class="btn btn-primary btn-large">David Copperfield, by Charles Dickens</a></p>
+            <p><a href="#" class="btn btn-primary btn-large">Dubliners, by James Joyce</a></p>
+            <p><a href="#" class="btn btn-primary btn-large">Ulysses, by James Joyce</a></p>
+            <p><a href="#" class="btn btn-primary btn-large">Heart of Darkness, by Joseph Conrad</a></p>
         </div>
 
-      {% else %}
-        <h1 class="entry-title">{{ page.title }}</h1>
-      {% endif %}
-    </header>
-    {{ page.content }}
-  </article>
+
+    </div>
+
+
 </div>
+
+{% endif %}
+
+
+
+
+
+
+
+
+
+{#
+{% if page.headerstyle == 'jumbotron' %}
+
+
+
+<div class="row-fluid">
+  <div class="span3">
+      <p>This is a little span here.
+  </div><!--/span-->
+  <div class="span9">
+    <div class="hero-unit">
+      <h1>Hello, world!</h1>
+      <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+      <p><a href="#" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+    </div>
+    <div class="row-fluid">
+      <div class="col-md-4">
+        <h2>Heading</h2>
+        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+        <p><a class="btn" href="#">View details &raquo;</a></p>
+      </div><!--/span-->
+      <div class="col-md-4">
+        <h2>Heading</h2>
+        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+        <p><a class="btn" href="#">View details &raquo;</a></p>
+      </div><!--/span-->
+      <div class="col-md-4">
+        <h2>Heading</h2>
+        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+        <p><a class="btn" href="#">View details &raquo;</a></p>
+      </div><!--/span-->
+    </div><!--/row-->
+    <div class="row-fluid">
+      <div class="col-md-4">
+        <h2>Heading</h2>
+        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+        <p><a class="btn" href="#">View details &raquo;</a></p>
+      </div><!--/span-->
+      <div class="col-md-4">
+        <h2>Heading</h2>
+        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+        <p><a class="btn" href="#">View details &raquo;</a></p>
+      </div><!--/span-->
+      <div class="col-md-4">
+        <h2>Heading</h2>
+        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+        <p><a class="btn" href="#">View details &raquo;</a></p>
+      </div><!--/span-->
+    </div><!--/row-->
+  </div><!--/span-->
+</div><!--/row-->
+
+
+#}
+
+
 {% endblock %}
