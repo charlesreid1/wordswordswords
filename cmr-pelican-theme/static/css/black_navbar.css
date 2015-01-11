@@ -1,18 +1,3 @@
-body {
-  padding-top: 80px;
-  padding-bottom: 40px;
-}
-
-.navbar-header {
-    margin-bottom: 75px;
-}
-
-
-
-/*
-http://twbscolor.smarchal.com/scss?bd=000000&bh=424242&cd=ecf0f1&ch=ffffff
-*/
-
 .navbar-default {
     background-color: #000000;
     border-color: #424242;
@@ -72,4 +57,3 @@ http://twbscolor.smarchal.com/scss?bd=000000&bh=424242&cd=ecf0f1&ch=ffffff
         background-color: #424242;
     }
 }
-
