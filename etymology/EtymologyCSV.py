@@ -5,6 +5,8 @@ import pandas as pd
 import re
 import logging
 import time
+import os.path
+import numpy as np
 from languages import languages, languages_key
 
 
@@ -19,7 +21,7 @@ class EtymologyCSV(object):
     The whole thing is dumped to a final CSV file.
     """
 
-    def __init__(self,gutenberg_,csv_,log_,do_definitions=False):
+    def __init__(self,gutenberg_,csv_,log_,master_=None,do_definitions=False):
         """
         Set up the etymology csv object.
 
@@ -30,6 +32,7 @@ class EtymologyCSV(object):
         self.html_file = gutenberg_
         self.csv_file  = csv_
         self.log_file  = log_
+        self.master_csv_file = master_
 
         self.do_definitions = do_definitions
 
@@ -46,6 +49,7 @@ class EtymologyCSV(object):
         self.html_file = "gutenberg/"+name_+".html"
         self.csv_file  = "csv/"+name_+".csv"
         self.log_file  = "log/"+name_+".log"
+        self.master_csv_file = "csv/master.csv"
 
         self.do_definitions = False
 
@@ -71,74 +75,86 @@ class EtymologyCSV(object):
         a TextBlob object.
         """
 
-        print "Opening HTML..."
-        with open(self.html_file,'r') as f:
-            html_doc = f.read()
-        soup = BeautifulSoup(html_doc)
+        if os.path.isfile(self.csv_file):
+
+            print "Loading existing etymology CSV..."
+            words = pd.read_csv(self.csv_file)
+            assert('word' in words.columns)
+            print "done"
+
+
+        else:
+
+            print "Opening HTML..."
+            with open(self.html_file,'r') as f:
+                html_doc = f.read()
+            soup = BeautifulSoup(html_doc)
+            print "done"
 
 
 
-        # ------
-        # page text
-        # <p>
-        # the texttags contain the text
-        texttags_all = [tt for tt in soup.findAll('p',text=True)]
-        texttags = []
-        for tta in texttags_all:
-            if 'class' in tt.attrs.keys():
-                if tt.attrs['class']=='toc':
-                    pass
-            texttags.append(tta)
-        print "len(texttags) =",len(texttags)
+            # ------
+            # page text
+            # <p>
+            # the texttags contain the text
+            print "Turning HTML into text..."
+            texttags_all = [tt for tt in soup.findAll('p',text=True)]
+            texttags = []
+            for tta in texttags_all:
+                if 'class' in tt.attrs.keys():
+                    if tt.attrs['class']=='toc':
+                        pass
+                texttags.append(tta)
+            print "len(texttags) =",len(texttags)
 
-        all_text = []
-        for tt in texttags:
-            all_text.append(tt.string)
+            all_text = []
+            for tt in texttags:
+                all_text.append(tt.string)
 
-        s = " ".join(all_text)
-        s = unicode(s)
+            s = " ".join(all_text)
+            s = unicode(s)
 
-        t = TextBlob(s)
+            t = TextBlob(s)
+            print "done"
 
-        print "Getting word counts..."
-        wc = t.word_counts
-        print "done"
+            print "Getting word counts..."
+            wc = t.word_counts
+            print "done"
         
-        words = pd.DataFrame([])
+            words = pd.DataFrame([])
 
-        print "Populating words..."
-        for the_word in wc.keys():
-            the_word = the_word.lower()
-            d = {}
-            d['word'] = the_word.encode('utf-8')
-            d['word count'] = wc[the_word]
+            print "Populating words..."
+            for the_word in wc.keys():
+                the_word = the_word.lower()
+                d = {}
+                d['word'] = the_word.encode('utf-8')
+                d['word count'] = wc[the_word]
 
-            # make space in the dataframe for later analysis
-            d['root language']=''
-            d['second language']=''
-            d['ranked languages']=''
+                # make space in the dataframe for later analysis
+                d['root language']=nan
+                d['second language']=nan
+                d['ranked languages']=nan
 
-            if do_definitions:
-                if len(word)>2:
-                    deff = Word(word).definitions
-                    if deff <> []:
-                        definition = "; ".join(deff)
-                        d['definition'] = definition 
+                if self.do_definitions:
+                    if len(word)>2:
+                        deff = Word(word).definitions
+                        if deff <> []:
+                            definition = "; ".join(deff)
+                            d['definition'] = definition 
 
-            words = words.append([d])
+                words = words.append([d])
 
-        print "done"
-        
-        print "Reindex according to word count ranking..."
-        words = words.sort(columns=['word count','word'],ascending=[False,True])
-        words.index = range(1,len(words)+1)
-        print "done"
+            print "done"
+            
+            print "Reindex according to word count ranking..."
+            words = words.sort(columns=['word count','word'],ascending=[False,True])
+            words.index = range(1,len(words)+1)
+            print "done"
 
 
-        print "Exporting to file..."
-        words.to_csv(self.csv_file,na_rep='',index=False)
-        print "done"
-
+            print "Exporting to file..."
+            words.to_csv(self.csv_file,index=False,na_rep="")
+            print "done"
 
 
 
@@ -150,12 +166,84 @@ class EtymologyCSV(object):
         looking up each unique word on the Online 
         Etymology Dictionary and parsing the search 
         results.
-        """
 
-        words = pd.read_csv(self.csv_file)
+        Method #2 can restart.
+        """
+        
+        # first, load our csv file
+        print "Loading etymology CSV..."
+        words = pd.read_csv(self.csv_file)#,na_rep="")#<-- this turns "" into NaN
+        words.fillna('',inplace=True)
+        print "done"
+
         wordlist = list(words['word'].values)
 
+
+
+        # check if master word list exists
+        if os.path.isfile(self.master_csv_file):
+
+            print "Populating etymology information from previous master list..."
+
+            # populate any missing word etymology entries 
+            # from the master word list:
+            shared_words = pd.read_csv(self.master_csv_file)
+            shared_words.fillna('',inplace=True)
+
+            shared_wordlist = list(shared_words['word'])
+
+            for _,word_row in words.iterrows():
+                this_word = word_row['word']
+                if this_word in shared_wordlist:
+
+                    rootlang = shared_words.loc[shared_words['word']==this_word,'root language']
+                    #try:
+                    word_row['root language'] = rootlang.values[0]
+
+                    secondlang = shared_words.loc[shared_words['word']==this_word,'second language']
+                    #try:
+                    word_row['second language'] = secondlang.values[0]
+
+                    rankedlang = shared_words.loc[shared_words['word']==this_word,'ranked languages']
+                    #try:
+                    word_row['ranked languages'] = rankedlang.values[0]
+
+                    import pdb; pdb.set_trace()
+                    a=0
+
+                #if this_word in shared_words['word'].values:
+
+                #    mykeys = ['root language','second language','ranked languages']
+                #    for key in mykeys:
+                #        if word_row[key]=='':
+                #            word_row[key] = shared_words.loc[shared_words['word']==this_word,key].values[0]
+
+            import pdb; pdb.set_trace()
+            print "done"
+
+
+
+        print "Etymology CSV contains existing data. Processing..."
+        # we are already underway.
+        # begin restart procedures.
+
+
+        if (sum(words['root language']<>'') > 0):
+
+            alldone = alldone.loc[ alldone['root language']<>'', 'word']
+            alldone_wordlist = list(alldone['word'])
+            # look up all the words that are not done. 
+
+        else:
+            alldone_wordlist = []
+
+        init_print = False
+        print "Beginning etymology lookups with 0 of",len(wordlist),"words"
         for cc,the_word in enumerate(wordlist):
+
+            # if a word is done, don't bother looking it up.
+            if the_word in alldone_wordlist:
+                continue
 
             # We want to look for the root word first.
             # If we don't find anything,
@@ -201,8 +289,12 @@ class EtymologyCSV(object):
                 this_word_full = dt.get_text()
     
                 # remove (n./adj./v.) 
-                this_word = this_word_full.split(' ')[:-2]
-                this_word = ''.join(this_word)
+                # ("the" is the only word that doesn't have n/adj/v)
+                if the_word<>'the':
+                    this_word = this_word_full.split(' ')[:-2]
+                    this_word = ''.join(this_word)
+                else:
+                    this_word = this_word_full
     
                 if the_word.lower()==this_word.lower():
                     # We have an exact match!
@@ -237,8 +329,12 @@ class EtymologyCSV(object):
                 # so use .split('.')[0] (first token before .)
                 #
     
-                synset = Word(the_word).synsets
-                synset_strings = [syn.name().split('.')[0] for syn in synset]
+                try:
+                    synset = Word(the_word).synsets
+                    synset_strings = [syn.name().split('.')[0] for syn in synset]
+                except:
+                    synset = []
+                    synset_strings = []
     
                 final_synset = []
                 for ss,sss in zip(synset,synset_strings):
@@ -362,9 +458,6 @@ class EtymologyCSV(object):
                             language2_name = ranked_langs[1]
                         except:
                             language2_name = ''
-    
-                        #first_lang_ref = min(etymology_grid_gt0)
-                        #last_lang_ref = max(etymology_grid_gt0)
         
                         print ""
                         print "Tagging word %d of %d: %s"%(cc,len(wordlist),the_word)
@@ -374,14 +467,20 @@ class EtymologyCSV(object):
                         words.loc[words['word']==the_word,'root language'] = language1_name
                         words.loc[words['word']==the_word,'second language'] = language2_name
                         words.loc[words['word']==the_word,'ranked languages'] = ",".join(ranked_langs)
-    
+
+            else:
+                # no result found. mark it '' and not NaN.
+                words.loc[words['word']==the_word,'root language'] = ''
+                words.loc[words['word']==the_word,'second language'] = ''
+                words.loc[words['word']==the_word,'ranked languages'] = ''
+
             if cc%50==0:
                 print "Exporting to file..."
-                words.to_csv(csvfile_lang,na_rep="")
+                words.to_csv(self.csv_file,na_rep="",index=False)
                 print "done"
     
         print "Exporting to file..."
-        words.to_csv(csvfile_lang,na_rep="")
+        words.to_csv(self.csv_file,na_rep="",index=False)
         print "done"
 
 
