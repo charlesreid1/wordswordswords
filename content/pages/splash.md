@@ -8,7 +8,10 @@ save_as: index.html
 
 ## What does it do?
 
-asdf
+Words Words Words is a repository containing scripts for marking up 
+HTML text with colored tags indicating the root languages of words.
+
+The tool is entirely implemented in Python.
 
 ## How does it work?
 

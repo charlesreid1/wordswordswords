@@ -118,7 +118,7 @@ class EtymologyCSV(object):
             d['second language']=''
             d['ranked languages']=''
 
-            if do_definitions:
+            if self.do_definitions:
                 if len(word)>2:
                     deff = Word(word).definitions
                     if deff <> []:
