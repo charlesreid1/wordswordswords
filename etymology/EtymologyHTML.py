@@ -9,6 +9,7 @@ import os.path
 from languages import languages, languages_key
 
 
+
 class EtymologyHTML(object):
     """
     Step 2: Etymology CSV -> Etymology HTML
@@ -102,7 +103,6 @@ class EtymologyHTML(object):
             
             # now that we have both html docs
             # as soups... compare last <p>
-            import pdb; pdb.set_trace()
             if soup.p[-1].lower()==soup2.p[-1].string.lower():
                 # We are finished
                 print "Found a finished HTML file in",self.html_file
@@ -123,8 +123,6 @@ class EtymologyHTML(object):
                     print "Picking up where we left off..."
                 else:
                     raise Exception("I'm lost!")
-                import pdb; pdb.set_trace()
-                a=0
 
 
 
@@ -209,6 +207,10 @@ class EtymologyHTML(object):
                     ich += 1
 
                     new_body.append( unicode(booktag) )
+
+
+
+                    # this should be a whole separate file
 
 
 

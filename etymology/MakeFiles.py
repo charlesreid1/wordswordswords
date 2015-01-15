@@ -7,6 +7,6 @@
 #h.export_html_file()
 
 
-from EtymologyCSV import *
-c = EtymologyCSV('dubliners')
+from EtymologyChapterCSV import *
+c = EtymologyChapterCSV('dubliners')
 c.export_csv()
