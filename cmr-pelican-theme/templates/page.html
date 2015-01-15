@@ -17,6 +17,17 @@ Page title
         {% include '_includes/key.html' %}
     </div>
 
+{% elif page.headerstyle=='languagekey' %}
+
+    {% include '_includes/key_navbar.html' %}
+
+    <h1 class="entry-title">{{ page.title }}</h1>
+    <h2 class="entry-title">{{ page.author }}</h2>
+    <p>&nbsp;</p>
+    <hr />
+    <p>&nbsp;</p>
+
+
 {% else %}
 
 
@@ -60,16 +71,11 @@ content is half page, half list of books.
 
 
 
-
-{% else %}
-
-
-
+{% elif page.headerstype == 'languagekey' %}
 {{ page.content }}
 
-{# it would be nice to put the language key navbar here. #}
-{% include '_includes/key_navbar.html' %}
-
+{% else %}
+{{ page.content }}
 
 {% endif %}
 

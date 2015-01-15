@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = u'charlesreid1'
 SITENAME = u'Words Words Words'
-SITEURL = '/wordswordswords'
+#SITEURL = '/wordswordswords'
 
 PATH = 'content'
 
@@ -18,10 +18,32 @@ DEFAULT_LANG = u'en'
 # --------------8<---------------------
 
 
+# Don't try to turn HTML files into pages
+READERS = {'html': None}
+
+
+PLUGIN_PATHS = ['/Users/charles/codes/pelican-plugins/']
+#PLUGINS = ['liquid_tags.include_code','liquid_tags.include_html']
+PLUGINS = ['liquid_tags','liquid_tags.include_code','liquid_tags.include_html']
+
+
+# directory for include_code
+CODE_DIR = 'code'
+
+# directory for include_html
+BOOKS_DIR = 'html'
+
+STATIC_PATHS = ['images','code','html']
+
+
+
+
 THEME = 'cmr-pelican-theme'
 DISPLAY_PAGES_ON_MENU = False
 #ADDITIONAL_CSS_FILE = 'wordswordswords.css'
 
+# dark and pastels.
+BOOTSWATCH_THEME = 'darkly'
 
 
 # --------------8<---------------------
