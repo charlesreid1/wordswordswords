@@ -188,8 +188,8 @@ class EtymologyHTML(object):
 
                 if booktag.name=='h2':
 
-                    # skip first one - it is the author
-                    if ich==1:
+                    # skip first and second ones - both are author
+                    if ich==1 or ich==2:
                         ich += 1
                         pass
 
