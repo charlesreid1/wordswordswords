@@ -3,7 +3,7 @@ ttp://colorbrewer2.org/
 6-class YlGnBu
 */
 
-span.english, span.oldenglish, span.welsh, span.irish {
+span.oldenglish, span.welsh, span.irish {
     /*background-color:#ffffcc;*/
     background-color:#ccc;
     color:#000;
