@@ -61,6 +61,25 @@ class EtymologyCSV(object):
 
 
 
+    def update_master_csv(self):
+        words = pd.read_csv(self.csv_file)
+        master_words = pd.read_csv(self.master_csv_file)
+
+        words.fillna('',inplace=True)
+        master_words.fillna('',inplace=True)
+
+        for rr,word_row in words.iterrows():
+            this_word = word_row['word']
+            if this_word not in master_words['word'].values:
+                if word_row['root language']<>'':
+                    d = {}
+                    for key in etymology_keys:
+                        d[key] = words.loc[rr,key]
+                    master_words.append([d])
+
+        master_words.to_csv(self.master_csv_file,na_rep="",index=False)
+
+
     def export_word_file(self):
         """
         The first task is to load the HTML text,
@@ -138,9 +157,9 @@ class EtymologyCSV(object):
                 d['word count'] = wc[the_word]
 
                 # make space in the dataframe for later analysis
-                d['root language']=nan
-                d['second language']=nan
-                d['ranked languages']=nan
+                d['root language']=''
+                d['second language']=''
+                d['ranked languages']=''
 
                 if self.do_definitions:
                     if len(word)>2:
@@ -179,12 +198,14 @@ class EtymologyCSV(object):
         
         # first, load our csv file
         print "Loading etymology CSV..."
-        words = pd.read_csv(self.csv_file)#,na_rep="")#<-- this turns "" into NaN
+        words = pd.read_csv(self.csv_file)
         words.fillna('',inplace=True)
         print "done"
 
         wordlist = list(words['word'].values)
 
+
+        etymology_keys = ['root language','second language','ranked languages']
 
 
         # check if master word list exists
@@ -194,62 +215,28 @@ class EtymologyCSV(object):
 
             # populate any missing word etymology entries 
             # from the master word list:
-            shared_words = pd.read_csv(self.master_csv_file)
-            shared_words.fillna('',inplace=True)
+            master_words = pd.read_csv(self.master_csv_file)
+            master_words.fillna('',inplace=True)
 
-            shared_wordlist = list(shared_words['word'])
+            shared_wordlist = list(master_words['word'])
 
-            for _,word_row in words.iterrows():
+            for rr,word_row in words.iterrows():
                 this_word = word_row['word']
-                if this_word in shared_wordlist:
-
-                    rootlang = shared_words.loc[shared_words['word']==this_word,'root language']
-                    #try:
-                    word_row['root language'] = rootlang.values[0]
-
-                    secondlang = shared_words.loc[shared_words['word']==this_word,'second language']
-                    #try:
-                    word_row['second language'] = secondlang.values[0]
-
-                    rankedlang = shared_words.loc[shared_words['word']==this_word,'ranked languages']
-                    #try:
-                    word_row['ranked languages'] = rankedlang.values[0]
-
-                    import pdb; pdb.set_trace()
-                    a=0
-
-                #if this_word in shared_words['word'].values:
-
-                #    mykeys = ['root language','second language','ranked languages']
-                #    for key in mykeys:
-                #        if word_row[key]=='':
-                #            word_row[key] = shared_words.loc[shared_words['word']==this_word,key].values[0]
-
-            import pdb; pdb.set_trace()
-            print "done"
-
-
-
-        print "Etymology CSV contains existing data. Processing..."
-        # we are already underway.
-        # begin restart procedures.
-
-
-        if (sum(words['root language']<>'') > 0):
-
-            alldone = alldone.loc[ alldone['root language']<>'', 'word']
-            alldone_wordlist = list(alldone['word'])
-            # look up all the words that are not done. 
-
-        else:
-            alldone_wordlist = []
+                if this_word in master_words['word'].values:
+                    # we need to do .values[0]
+                    for key in etymology_keys:
+                        words.loc[rr,key] = master_words.loc[master_words['word']==this_word,key].values[0]
 
         init_print = False
-        print "Beginning etymology lookups with 0 of",len(wordlist),"words"
-        for cc,the_word in enumerate(wordlist):
+        untagged = len([j for j in words['root language'].values if j<>''])
+        print "Beginning etymology lookups with 0 of",len(wordlist),"words, ",untagged,"untagged words"
+
+        for cc,word_row in words.iterrows():
+
+            the_word = word_row['word']
 
             # if a word is done, don't bother looking it up.
-            if the_word in alldone_wordlist:
+            if word_row['root language']<>'':
                 continue
 
             # We want to look for the root word first.
@@ -471,15 +458,17 @@ class EtymologyCSV(object):
     
                         print the_word,":",language1_name
     
-                        words.loc[words['word']==the_word,'root language'] = language1_name
-                        words.loc[words['word']==the_word,'second language'] = language2_name
-                        words.loc[words['word']==the_word,'ranked languages'] = ",".join(ranked_langs)
+                        etymology_info = [language1_name,language2_name,ranked_languages]
+                        d = {}
+                        for key,info in zip(etymology_keys,etymology_info):
+                            d[key] = info
+                            words.loc[words['word']==the_word,key] = info
+                        master_words.append([d])
 
             else:
                 # no result found. mark it '' and not NaN.
-                words.loc[words['word']==the_word,'root language'] = ''
-                words.loc[words['word']==the_word,'second language'] = ''
-                words.loc[words['word']==the_word,'ranked languages'] = ''
+                for key in etymology_keys:
+                    words.loc[words['word']==the_word,key] = ''
 
             if cc%50==0:
                 print "Exporting to file..."
@@ -488,6 +477,8 @@ class EtymologyCSV(object):
     
         print "Exporting to file..."
         words.to_csv(self.csv_file,na_rep="",index=False)
+        # also export the new words we've added to master
+        master_words.to_csv(self.master_csv_file,na_rep="",index=False)
         print "done"
 
 
