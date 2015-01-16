@@ -81,13 +81,21 @@ class EtymologyChapterHTML(EtymologyHTML):
             
             new_body.append(unicode(h2tag))
 
-            chapter_file = name_+ich+".html"
+            chapter_file = self.name_+str(ich)+".html"
+            
+            ptag = h2tag.findNextSibling(['p','h2'])
+            if ptag == None:
+                break
 
+            ip = 0
+            while ptag.name <> 'h2':
 
-            ptags = [pp for pp in h2tag.findAll('p',text=True)]
-
-            for ptag in ptags:
                 ip += 1
+                if ip%25==0:
+                    print "Paragraph",ip
+
+                # next_tag is our paragraph tag
+                # and contains the text we want to extract
 
                 # process paragraph text:
                 # loop through each word in our etymology dataframe,
@@ -116,10 +124,6 @@ class EtymologyChapterHTML(EtymologyHTML):
 
                     for _,word_row in words_w_lang.iterrows():
 
-                        #if (ip%50==0 or ip==1) and (iw%500==0 or iw==1):
-                        #    print "    Tagging word",iw,"of",len(words_w_lang)
-                        iw += 1 
-
                         word = word_row['word']
                         full_lang = word_row['root language']
                         lang = languages_key[full_lang]
@@ -130,7 +134,12 @@ class EtymologyChapterHTML(EtymologyHTML):
 
                     new_ptag_html = ' '.join(split)
 
-                    new_body.append( "<p>" + new_ptag_html + "</p>" )
+                    new_body.append( new_ptag_html )
+
+
+                # move on to the next tag
+                ptag = ptag.findNextSibling(['p','h2'])
+
 
             print "done with chapter"
 
@@ -139,12 +148,10 @@ class EtymologyChapterHTML(EtymologyHTML):
             print "done"
 
             print "Writing to file",chapter_file
-            with open(chapter_file,'w') as f:
+            with open("html/"+chapter_file,'w') as f:
                 f.write(soup.prettify().encode('utf-8'))
             print "done"
 
-
-
-
+            ich += 1
 
 
