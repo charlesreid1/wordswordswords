@@ -22,7 +22,7 @@ DEFAULT_LANG = u'en'
 READERS = {'html': None}
 
 
-PLUGIN_PATHS = ['/Users/charles/codes/pelican-plugins/']
+PLUGIN_PATHS = ['/home/charles/codes/pelican-plugins/']
 #PLUGINS = ['liquid_tags.include_code','liquid_tags.include_html']
 PLUGINS = ['liquid_tags','liquid_tags.include_code','liquid_tags.include_html']
 
