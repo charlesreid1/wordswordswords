@@ -42,7 +42,7 @@ divtag_mod.append(p_tag)
 
 # now construct title/buttons for each book
 
-for link,book in books.keys(),books.values():
+for link,book in zip(books.keys(),books.values()):
 
     print "Making buttons for book:",book
 
