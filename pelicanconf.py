@@ -33,7 +33,7 @@ CODE_DIR = 'code'
 # directory for include_html
 BOOKS_DIR = 'html'
 
-STATIC_PATHS = ['images','code','html']
+STATIC_PATHS = ['images','code']# don't need 'html' or original files because we're copying the html into the final page 
 
 
 
