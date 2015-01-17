@@ -14,6 +14,8 @@ dubliners_stories = ['The Sisters',
                      'Grace',
                      'The Dead']
 
+links = {}
+
 for im1,story in enumerate(dubliners_stories):
     i = im1+1
 
@@ -29,7 +31,35 @@ for im1,story in enumerate(dubliners_stories):
     contents += "{%include_html "+html_filename+"%}"
     contents += "\n\n"
 
+    links[story] = html_filename
+
     with open(md_filename,'w') as f:
         f.write(contents)
     print "Finished writing markdown file ",md_filename
+
+
+
+
+
+# now make the main page
+
+filename_base = "dubliners"
+html_filename = filename_base+".html"
+md_filename   = filename_base+".md"
+contents  = "Title: Dubliners"
+contents += "\nAuthors: James Joyce"
+contents += "\nHeaderStyle: book"
+contents += "\nsave_as: "+html_filename
+contents += "\n\n"
+
+for linkname,link in zip(links.keys(),links.values()):
+
+    contents += "[" + linkname + "](" + link + ")"
+
+contents += "\n\n"
+
+with open(md_filename,'w') as f:
+    f.write(contents)
+print "Finished writing markdown file ",md_filename
+
 
