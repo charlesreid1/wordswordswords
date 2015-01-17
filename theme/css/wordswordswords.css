@@ -9,11 +9,11 @@ http://colorbrewer2.org/
 
 span.french {
     /*purp*/
-    background-color:#8c96c6;
+    background-color:#88419d;
     color:#fff;
 }
 span.oldfrench {
-    background-color:#88419d;
+    background-color:#810f7c;
     color:#fff;
 }
 
@@ -85,7 +85,7 @@ span.olddutch {
 span.welsh {
     /*gold*/
     background-color:#ffd92f;
-    color:#fff;
+    color:#000;
 }
 span.oldsaxon, span.oldfrisian {
     /*gold*/
