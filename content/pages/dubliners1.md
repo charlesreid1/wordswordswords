@@ -1,4 +1,4 @@
-Title: Dubliners
+Title: The Sisters
 Authors: James Joyce
 HeaderStyle: languagekey
 save_as: dubliners1.html

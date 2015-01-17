@@ -1,4 +1,4 @@
-Title: Dubliners
+Title: An Encounter
 Authors: James Joyce
 HeaderStyle: languagekey
 save_as: dubliners2.html

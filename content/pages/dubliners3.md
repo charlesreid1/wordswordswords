@@ -1,4 +1,4 @@
-Title: Dubliners
+Title: Araby
 Authors: James Joyce
 HeaderStyle: languagekey
 save_as: dubliners3.html
