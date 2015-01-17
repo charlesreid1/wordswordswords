@@ -42,7 +42,9 @@ contents += "\n\n"
 
 for linkname,link in zip(links.keys(),links.values()):
 
-    contents += "[" + linkname + "](" + link + ")"
+    #contents += "[" + linkname + "](" + link + ")"
+    contents += '<a class="btn btn-large btn-primary" href="'+link+'">'+linkname+'</a>'
+    contents += "\n"
 
 contents += "\n\n"
 

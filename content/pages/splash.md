@@ -25,6 +25,7 @@ Words Words Words uses a couple of Python libraries to do its primary tasks: par
 * To tag each word, I'm just using Python's built-in ```list``` and ```string``` types.
 * To pull all of the tagged HTML, CSS stylesheets, and JS together, I'm using [Pelican](http://blog.getpelican.com/) 
   (my preferred Python alternative to Ruby's Jekyll)
+# To generate color palettes for various languages, I used [The Color Brewer](http://colorbrewer2.org/)
 
 ## Check out the code
 
