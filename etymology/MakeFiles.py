@@ -11,6 +11,10 @@
 #h = EtymologyHTML('copperfield')
 #h.export_html_file()
 
+#from EtymologyChapterHTML import *
+#h = EtymologyChapterHTML('dubliners')
+#h.export_html_file()
+
 from EtymologyChapterHTML import *
-h = EtymologyChapterHTML('dubliners')
+h = EtymologyChapterHTML('copperfield')
 h.export_html_file()

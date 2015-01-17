@@ -73,6 +73,11 @@ class EtymologyChapterHTML(EtymologyHTML):
         ich=1
         for h2tag in h2tags:
 
+            ## only do a particular chapter
+            #if ich<15:
+            #    ich += 1
+            #    continue
+
             print "Tagging chapter heading",ich
 
             h2txt = h2tag.string
@@ -82,26 +87,34 @@ class EtymologyChapterHTML(EtymologyHTML):
             new_body.append(unicode(h2tag))
 
             chapter_file = self.name_+str(ich)+".html"
-            
-            ptag = h2tag.findNextSibling(['p','h2'])
-            if ptag == None:
+
+            nexttag = h2tag.findNextSibling(['p','h2'])
+            if nexttag is None:
+                # nothing left in the document, 
+                # so exit this loop
                 break
 
             ip = 0
-            while ptag.name <> 'h2':
+            while True:
+
+                if nexttag.name=='h2':
+                    # we're done with all the <p> tags 
+                    # in this chapter
+                    break
+                if nexttag is None:
+                    break
 
                 ip += 1
                 if ip%25==0:
                     print "Paragraph",ip
 
-                # next_tag is our paragraph tag
+                # nexttag is our paragraph tag
                 # and contains the text we want to extract
 
                 # process paragraph text:
                 # loop through each word in our etymology dataframe,
                 # and tag each word that we find in it.
 
-                #
                 # split is the variable we'll be modifying on the fly.
                 # we'll go through split word-by-word and see if it is 
                 # in our etymology dataframe.
@@ -113,15 +126,16 @@ class EtymologyChapterHTML(EtymologyHTML):
                 # becomes
                 # 
                 # split = [ ... , '<div class="latin">python</div>', ... ]
-                # 
-                # this is all re-joined at the end with a ' '.join(split)
                 #
+                # this is all re-joined at the end with a ' '.join(split)
 
-                if ptag.string<> None:
+                try:
+                    split = nexttag.string.split()
+                except AttributeError:
+                    # no text
+                    split = []
 
-                    split = ptag.string.split()
-
-
+                if split <> []:
                     for _,word_row in words_w_lang.iterrows():
 
                         word = word_row['word']
@@ -132,13 +146,18 @@ class EtymologyChapterHTML(EtymologyHTML):
                             if token.lower() == word.lower():
                                 split[it] = '<span class="' + lang + '">' + token + '</span>'
 
-                    new_ptag_html = ' '.join(split)
+                    new_html = ' '.join(split)
 
-                    new_body.append( new_ptag_html )
+                    new_body.append( new_html )
 
-
-                # move on to the next tag
-                ptag = ptag.findNextSibling(['p','h2'])
+                # increment the tag now, 
+                # and do a null check 
+                # (if no tag, bail out)
+                nexttag = nexttag.findNextSibling(['p','h2'])
+                if nexttag is None:
+                    # nothing left in the document, 
+                    # so exit this loop
+                    break
 
 
             print "done with chapter"
@@ -153,5 +172,7 @@ class EtymologyChapterHTML(EtymologyHTML):
             print "done"
 
             ich += 1
+
+
 
 
