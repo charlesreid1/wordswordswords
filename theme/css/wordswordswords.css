@@ -25,7 +25,7 @@ span.greek {
 span.latin {
     /*aqua green*/
     background-color:#7bccc4;
-    color:#fff;
+    color:#000;
 }
 span.sanskrit {
     /*lightgreen*/
@@ -36,11 +36,11 @@ span.sanskrit {
 span.norse {
     /*pinkish*/
     background-color:#f1b6da;
-    color:#fff;
+    color:#000;
 }
 span.oldnorse {
     background-color:#d01c8b;
-    color:#000;
+    color:#fff;
 }
 
 span.german {
@@ -67,17 +67,11 @@ span.oldenglish {
     background-color:#fc8d59;
     color:#000;
 }
-span.welsh {
-    /*orange-red*/
-    background-color:#d73027;
-    color:#fff;
-}
 span.irish, span.oldirish {
     /*green-yellow*/
     background-color:#d9ef8b;
     color:#000;
 }
-
 span.dutch, span.middledutch {
     /*brown*/
     background-color:#d8b365;
@@ -88,6 +82,11 @@ span.olddutch {
     color:#fff;
 }
 
+span.welsh {
+    /*gold*/
+    background-color:#ffd92f;
+    color:#fff;
+}
 span.oldsaxon, span.oldfrisian {
     /*gold*/
     background-color:#ffd92f;
