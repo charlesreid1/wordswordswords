@@ -1,3 +1,3 @@
 from EtymologyChapterHTML import *
-h = EtymologyChapterHTML('dubliners')
+h = EtymologyChapterHTML('copperfield')
 h.export_html_file()
