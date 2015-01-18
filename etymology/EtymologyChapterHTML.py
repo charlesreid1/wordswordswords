@@ -24,6 +24,8 @@ class EtymologyChapterHTML(EtymologyHTML):
         Then loop through each paragraph, and look up 
         each word in our etymology data container.
         """
+        self.dest_dir = "../../content/html"
+
         words = pd.read_csv(self.csv_file)
         words = words.fillna("")
 
@@ -167,7 +169,7 @@ class EtymologyChapterHTML(EtymologyHTML):
             print "done"
 
             print "Writing to file",chapter_file
-            with open("html/"+chapter_file,'w') as f:
+            with open(self.dest_dir+"/"+chapter_file,'w') as f:
                 f.write(soup.prettify().encode('utf-8'))
             print "done"
 
