@@ -24,7 +24,7 @@ class EtymologyChapterHTML(EtymologyHTML):
         Then loop through each paragraph, and look up 
         each word in our etymology data container.
         """
-        self.dest_dir = "../../content/html"
+        self.dest_dir = "html"
 
         words = pd.read_csv(self.csv_file)
         words = words.fillna("")
@@ -70,10 +70,13 @@ class EtymologyChapterHTML(EtymologyHTML):
 
 
         h2tags = [tt for tt in soup.findAll('h2',text=True)]
-        h2tags = h2tags[2:]
+        h2tags = h2tags[1:]
 
         ich=1
         for h2tag in h2tags:
+
+            if ich>1:
+                continue
 
             ## only do a particular chapter
             #if ich<15:

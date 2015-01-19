@@ -8,10 +8,20 @@ save_as: index.html
 
 ## What does it do?
 
-Words Words Words is a repository containing scripts for marking up 
-HTML text with colored tags indicating the root languages of words.
+Words Words Words is a project using Python to color-code words in text
+according to their etymological roots, and render the result as HTML.
+
+The output of the scripts is available in the book list on the right.
+The repository contains the scripts used to mark up the text, 
+look words up in the Online Etymology Dictionary and parse the results
+to tag words with their root language, and create the final HTML.
 
 The tool is entirely implemented in Python.
+
+## What books are available?
+
+All of the books that have been tagged are listed on the right. 
+More books are on the way...
 
 ## How does it work?
 
@@ -25,7 +35,15 @@ Words Words Words uses a couple of Python libraries to do its primary tasks: par
 * To tag each word, I'm just using Python's built-in ```list``` and ```string``` types.
 * To pull all of the tagged HTML, CSS stylesheets, and JS together, I'm using [Pelican](http://blog.getpelican.com/) 
   (my preferred Python alternative to Ruby's Jekyll)
-# To generate color palettes for various languages, I used [The Color Brewer](http://colorbrewer2.org/)
+* To generate color palettes for various languages, I used [The Color Brewer](http://colorbrewer2.org/)
+
+## Who wrote Words Words Words?
+
+Charles Reid wrote Words Words Words.
+
+Visit [charlesreid1.com](http://charlesreid1.com/)
+
+or check out [@charlesreid1 on Github](https://github.com/charlesreid1)
 
 ## Check out the code
 
