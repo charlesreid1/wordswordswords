@@ -9,7 +9,8 @@ Page title
 #}
 
 
-{% if page.headerstyle=='jumbotron' %}
+{% if page.headerstyle=='jumbotron' or page.headerstyle=='book'%}
+
     <div class="jumbotron">
         <h1>{{ page.title }}</h1>
         <p>Tagging word <span class="french">etymology</span> <span class="oldenglish">with</span> <span class="latin">Python</span> <span class="oldenglish">and</span> HTML .</p>
@@ -21,7 +22,9 @@ Page title
 
     <link href="{{ SITEURL }}/theme/css/padded_body.css" rel="stylesheet" type="text/css" />
 
-    {% include '_includes/key_navbar.html' %}
+    {% include '_includes/key_navbar_top.html' %}
+    {% include '_includes/key.html' %}
+    {% include '_includes/key_navbar_bottom.html' %}
 
     <h1 class="entry-title">{{ page.title }}</h1>
     <h2 class="entry-title">{{ page.author }}</h2>
@@ -72,14 +75,26 @@ content is half page, half list of books.
 </div>
 
 
+{% elif page.headerstyle=='book' %}
 
-{% elif page.headerstype == 'languagekey' %}
+    <h1 class="entry-title">{{ page.title }}</h1>
+    <h2 class="entry-title">{{ page.author }}</h2>
+
+    {{ page.content }}
+
+
+{% elif page.headerstyle == 'languagekey' %}
+
 {{ page.content }}
+
 
 {% else %}
+
 {{ page.content }}
 
+
 {% endif %}
+
 
 
 {% endblock %}

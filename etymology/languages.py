@@ -16,6 +16,7 @@ languages = ['French',\
              'Spanish','Italian',
              'Polish','Turkish']
 
+# ranked more common to less common
 languages_key = {}
 languages_key['French']             ='french'
 languages_key['Old French']         ='oldfrench'
@@ -32,11 +33,11 @@ languages_key['Old English']        ='oldenglish'
 languages_key['Welsh']              ='welsh'
 languages_key['Irish']              ='irish'
 languages_key['Old Irish']          ='oldirish'
-languages_key['Old Saxon']          ='oldsaxon'
-languages_key['Old Frisian']        ='oldfrisian'
 languages_key['Dutch']              ='dutch'
 languages_key['Middle Dutch']       ='middledutch'
 languages_key['Old Dutch']          ='olddutch'
+languages_key['Old Saxon']          ='oldsaxon'
+languages_key['Old Frisian']        ='oldfrisian'
 languages_key['Russian']            ='russian'
 languages_key['Slavonic']           ='slavonic'
 languages_key['Arabic']             ='arabic'

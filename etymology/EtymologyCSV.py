@@ -531,6 +531,8 @@ class EtymologyCSV(object):
                             language2_name = ranked_langs[1]
                         except:
                             language2_name = ''
+
+                        ranked_languages = ";".join(ranked_langs)
         
                         print ""
                         print "Tagging word %d of %d: %s"%(cc,len(wordlist),the_word)
@@ -541,13 +543,13 @@ class EtymologyCSV(object):
                         d = {}
                         for key,info in zip(etymology_keys,etymology_info):
                             d[key] = info
-                            words.loc[words['word']==the_word,key] = info
+                            words.loc[cc,key] = info 
                         master_words.append([d])
 
             else:
                 # no result found. mark it '' and not NaN.
                 for key in etymology_keys:
-                    words.loc[words['word']==the_word,key] = ''
+                    words.loc[cc,key]=''
 
             if cc%50==0:
                 print "Exporting to file..."

@@ -24,6 +24,8 @@ class EtymologyChapterHTML(EtymologyHTML):
         Then loop through each paragraph, and look up 
         each word in our etymology data container.
         """
+        self.dest_dir = "html"
+
         words = pd.read_csv(self.csv_file)
         words = words.fillna("")
 
@@ -68,10 +70,18 @@ class EtymologyChapterHTML(EtymologyHTML):
 
 
         h2tags = [tt for tt in soup.findAll('h2',text=True)]
-        h2tags = h2tags[2:]
+        h2tags = h2tags[1:]
 
         ich=1
         for h2tag in h2tags:
+
+            if ich>1:
+                continue
+
+            ## only do a particular chapter
+            #if ich<15:
+            #    ich += 1
+            #    continue
 
             print "Tagging chapter heading",ich
 
@@ -81,19 +91,35 @@ class EtymologyChapterHTML(EtymologyHTML):
             
             new_body.append(unicode(h2tag))
 
-            chapter_file = name_+ich+".html"
+            chapter_file = self.name_+str(ich)+".html"
 
+            nexttag = h2tag.findNextSibling(['p','h2'])
+            if nexttag is None:
+                # nothing left in the document, 
+                # so exit this loop
+                break
 
-            ptags = [pp for pp in h2tag.findAll('p',text=True)]
+            ip = 0
+            while True:
 
-            for ptag in ptags:
+                if nexttag.name=='h2':
+                    # we're done with all the <p> tags 
+                    # in this chapter
+                    break
+                if nexttag is None:
+                    break
+
                 ip += 1
+                if ip%25==0:
+                    print "Paragraph",ip
+
+                # nexttag is our paragraph tag
+                # and contains the text we want to extract
 
                 # process paragraph text:
                 # loop through each word in our etymology dataframe,
                 # and tag each word that we find in it.
 
-                #
                 # split is the variable we'll be modifying on the fly.
                 # we'll go through split word-by-word and see if it is 
                 # in our etymology dataframe.
@@ -105,20 +131,17 @@ class EtymologyChapterHTML(EtymologyHTML):
                 # becomes
                 # 
                 # split = [ ... , '<div class="latin">python</div>', ... ]
-                # 
-                # this is all re-joined at the end with a ' '.join(split)
                 #
+                # this is all re-joined at the end with a ' '.join(split)
 
-                if ptag.string<> None:
+                try:
+                    split = nexttag.string.split()
+                except AttributeError:
+                    # no text
+                    split = []
 
-                    split = ptag.string.split()
-
-
+                if split <> []:
                     for _,word_row in words_w_lang.iterrows():
-
-                        #if (ip%50==0 or ip==1) and (iw%500==0 or iw==1):
-                        #    print "    Tagging word",iw,"of",len(words_w_lang)
-                        iw += 1 
 
                         word = word_row['word']
                         full_lang = word_row['root language']
@@ -128,9 +151,19 @@ class EtymologyChapterHTML(EtymologyHTML):
                             if token.lower() == word.lower():
                                 split[it] = '<span class="' + lang + '">' + token + '</span>'
 
-                    new_ptag_html = ' '.join(split)
+                    new_html = ' '.join(split)
 
-                    new_body.append( "<p>" + new_ptag_html + "</p>" )
+                    new_body.append( new_html )
+
+                # increment the tag now, 
+                # and do a null check 
+                # (if no tag, bail out)
+                nexttag = nexttag.findNextSibling(['p','h2'])
+                if nexttag is None:
+                    # nothing left in the document, 
+                    # so exit this loop
+                    break
+
 
             print "done with chapter"
 
@@ -139,11 +172,11 @@ class EtymologyChapterHTML(EtymologyHTML):
             print "done"
 
             print "Writing to file",chapter_file
-            with open(chapter_file,'w') as f:
+            with open(self.dest_dir+"/"+chapter_file,'w') as f:
                 f.write(soup.prettify().encode('utf-8'))
             print "done"
 
-
+            ich += 1
 
 
 
