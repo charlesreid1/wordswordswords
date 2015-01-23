@@ -21,21 +21,6 @@ class EtymologyCSV(object):
     The whole thing is dumped to a final CSV file.
     """
 
-    def __init__(self,gutenberg_,csv_,log_,master_=None,do_definitions=False):
-        """
-        Set up the etymology csv object.
-
-        in_  : html file containing Gutenberg ebook
-        out_ : csv file for storing etymology information
-        log_ : log file
-        """
-        self.html_file = gutenberg_
-        self.csv_file  = csv_
-        self.log_file  = log_
-        self.master_csv_file = master_
-
-        self.do_definitions = do_definitions
-
     def __init__(self,name_,do_definitions=False):
         """
         A very abbreviated setup
@@ -47,7 +32,8 @@ class EtymologyCSV(object):
         log file is <name>.log
         """
         self.html_file = "gutenberg/"+name_+".html"
-        self.csv_file  = "csv/"+name_+".csv"
+        self.words_csv_file  = "csv/"+name_+"_words.csv"
+        self.etymologies_csv_file  = "csv/"+name_+"_etymologies.csv"
         self.log_file  = "log/"+name_+".log"
         self.master_csv_file = "csv/master.csv"
 
@@ -62,7 +48,11 @@ class EtymologyCSV(object):
 
 
     def update_master_csv(self):
-        words = pd.read_csv(self.csv_file)
+        try:
+            words = pd.read_csv(self.etymologies_csv_file)
+        except:
+            raise Exception("Error: cannot update master csv without an etymologies file: "+self.etymologies_csv_file)
+        
         master_words = pd.read_csv(self.master_csv_file)
 
         words.fillna('',inplace=True)
@@ -78,6 +68,97 @@ class EtymologyCSV(object):
                     master_words.append([d])
 
         master_words.to_csv(self.master_csv_file,na_rep="",index=False)
+    
+
+    def get_root_word(self,the_word):
+
+        try:
+            full_synset = Word(the_word).synsets
+            full_synset_strings = [syn.name().split('.')[0] for syn in full_synset]
+        except:
+            full_synset_strings = []
+
+        # only keep the suggested synset 
+        # if the first three letters of the synset
+        # match the first three letters of the original word
+        # (synset returns lots of diff words...)
+        synset = []
+        for sss in zip(full_synset_strings):
+            if sss[:3] == the_word[:3]:
+                synset.append(sss)
+
+
+        # first try removing any common suffixes
+
+        # -ed
+        if the_word[-2:]=='ed':
+            # -ed to -
+            # consonant, more likely, so prepend
+            synset.prepend(the_word[:-2])
+
+            # -ed to -e
+            synset.append(the_word[:-1])
+
+        # -ing
+        if the_word[-3:]=='ing':
+            # -ing to -
+            synset.prepend(the_word[:-3])
+
+        # -ly
+        if the_word[-2:]=='ly':
+            # -ly to -
+            synset.prepend(the_word[:-2])
+
+        # -es
+        if the_word[-2:]=='es':
+            # -es to -
+            synset.prepend(the_word[:-2])
+            # -es to -e
+            synset.append(the_word[:-1])
+
+
+
+        import pdb; pdb.set_trace()
+
+
+        # pick out synonyms from the synset that are basically the same word (share first 3 letters)
+        # (and also strip them of part of speech,
+        #  n., v., and so on...)
+        #
+        # synsets look like:
+        # swing.n.04
+        # 
+        # so use .split('.')[0] (first token before .)
+        #
+
+    
+    
+        final_synset = list(set(final_synset))
+
+        return []
+
+
+
+    def etymonline_lookup(self,the_word):
+        """
+        Returns a BeautifulSoup object
+        containing the results of the search
+        """
+
+        browser = mechanize.Browser()
+        response = browser.open('http://www.etymonline.com/')
+        browser.select_form(nr=0)
+        try:
+            browser['search'] = the_word
+        except TypeError:        
+            pass
+        resp = browser.submit()
+        html_doc = resp.read()
+        soup = BeautifulSoup(html_doc)
+
+        return soup
+
+
 
 
     def export_word_file(self):
@@ -94,10 +175,17 @@ class EtymologyCSV(object):
         a TextBlob object.
         """
 
-        if os.path.isfile(self.csv_file):
+        if os.path.isfile(self.words_csv_file):
 
-            print "Loading existing etymology CSV..."
-            words = pd.read_csv(self.csv_file)
+            print "Loading existing words CSV..."
+            words = pd.read_csv(self.words_csv_file)
+            assert('word' in words.columns)
+            print "done"
+
+        elif os.path.isfile(self.etymologies_csv_file):
+
+            print "Loading existing etymologies CSV..."
+            words = pd.read_csv(self.etymologies_csv_file)
             assert('word' in words.columns)
             print "done"
 
@@ -156,10 +244,10 @@ class EtymologyCSV(object):
                 d['word'] = the_word.encode('utf-8')
                 d['word count'] = wc[the_word]
 
-                # make space in the dataframe for later analysis
-                d['root language']=''
-                d['second language']=''
-                d['ranked languages']=''
+                ## make space in the dataframe for later analysis
+                #d['root language']=''
+                #d['second language']=''
+                #d['ranked languages']=''
 
                 if self.do_definitions:
                     if len(word)>2:
@@ -179,7 +267,7 @@ class EtymologyCSV(object):
 
 
             print "Exporting to file..."
-            words.to_csv(self.csv_file,index=False,na_rep="")
+            words.to_csv(self.words_csv_file,index=False,na_rep="")
             print "done"
 
 
@@ -197,15 +285,18 @@ class EtymologyCSV(object):
         """
         
         # first, load our csv file
-        print "Loading etymology CSV..."
-        words = pd.read_csv(self.csv_file)
+        print "Loading words CSV..."
+        try:
+            words = pd.read_csv(self.words_csv_file)
+        except:
+            raise Exception("Error: need a words CSV file to proceed: "+self.words_csv_file)
         words.fillna('',inplace=True)
         print "done"
 
         wordlist = list(words['word'].values)
 
 
-        etymology_keys = ['root language','second language','ranked languages']
+        etymology_keys = ['root word','root language','second language','ranked languages']
 
 
         # check if master word list exists
@@ -226,9 +317,14 @@ class EtymologyCSV(object):
                     # we need to do .values[0]
                     for key in etymology_keys:
                         words.loc[rr,key] = master_words.loc[master_words['word']==this_word,key].values[0]
+        else:
+            master_words = pd.DataFrame([])
 
         init_print = False
-        untagged = len([j for j in words['root language'].values if j<>''])
+        try:
+            untagged = len([j for j in words['root language'].values if j<>''])
+        except KeyError:
+            untagged = []
         print "Beginning etymology lookups with 0 of",len(wordlist),"words, ",untagged,"untagged words"
 
         for cc,word_row in words.iterrows():
@@ -236,32 +332,27 @@ class EtymologyCSV(object):
             the_word = word_row['word']
 
             # if a word is done, don't bother looking it up.
-            if word_row['root language']<>'':
+            if 'root language' in word_row.keys():
+                if word_row['root language']<>'':
+                    continue
+
+            if len(the_word)<2:
                 continue
 
-            # We want to look for the root word first.
-            # If we don't find anything,
-            # try removing any common suffixes.
+
+            # First, look for the word itself.
+            # If that doesn't work, try variations.
 
             found_result = False
 
             # ------------
             # Original word
-    
-            browser = mechanize.Browser()
-            response = browser.open('http://www.etymonline.com/')
-            browser.select_form(nr=0)
-            try:
-                browser['search'] = the_word
-            except TypeError:        
-                pass
-            resp = browser.submit()
-            html_doc = resp.read()
-            
+
             # now use beautifulsoup to go through resp.read()
+            soup = self.etymonline_lookup(the_word)
     
-            soup = BeautifulSoup(html_doc)
             matching_words = {}
+            root_words = {}
         
             # dt = dictionary term
             dts = soup.find_all('dt')
@@ -285,11 +376,14 @@ class EtymologyCSV(object):
                 # remove (n./adj./v.) 
                 # ("the" is the only word that doesn't have n/adj/v)
                 if the_word<>'the':
-                    this_word = this_word_full.split(' ')[:-2]
+                    #this_word = this_word_full.split(' ')[:-2]
+                    this_word = this_word_full.split(' ')[0]
                     this_word = ''.join(this_word)
                 else:
                     this_word = this_word_full
-    
+                this_word = this_word.strip()
+
+
                 if the_word.lower()==this_word.lower():
                     # We have an exact match!
     
@@ -302,7 +396,8 @@ class EtymologyCSV(object):
                     etym = dd.get_text()
     
                     # etymology is the value
-                    matching_words[this_word] = etym
+                    matching_words[the_word] = etym
+                    root_words[the_word] = the_word
     
                     # yay!
                     found_result = True
@@ -312,62 +407,43 @@ class EtymologyCSV(object):
     
             # Now check for common suffixes...
             if found_result == False:
+
+                roots = self.get_root_word(the_word)
+
+                # look for each root
+                for root in roots:
+
+                    soup = self.etymonline_lookup(root)
+
+                    for dt,dd in zip(dts,dds):
     
-                # pick out synonyms from the synset that are basically the same word (share first 3 letters)
-                # (and also strip them of part of speech,
-                #  n., v., and so on...)
-                #
-                # synsets look like:
-                # swing.n.04
-                # 
-                # so use .split('.')[0] (first token before .)
-                #
+                        # get the text of the term
+                        this_word_full = dt.get_text()
     
-                try:
-                    synset = Word(the_word).synsets
-                    synset_strings = [syn.name().split('.')[0] for syn in synset]
-                except:
-                    synset = []
-                    synset_strings = []
+                        # remove (n./adj./v.) 
+                        this_word = this_word_full.split(' ')[:-2]
+                        this_word = ''.join(this_word)
     
-                final_synset = []
-                for ss,sss in zip(synset,synset_strings):
-                    if sss[:3] == the_word[:3]:
-                        final_synset.append(sss)
+                        for syn in final_synset:
+                            if syn.lower() == this_word.lower():
+                                # We have an exact match!
     
-                final_synset = list(set(final_synset))
+                                # key is the_word 
+                                # or 
+                                # key is this_word
     
-                # Look for synonyms
-                # in each search result
-                # (searching for each synonym)
-                for dt,dd in zip(dts,dds):
+                                # get etymology from the dd tag
+                                # corresponding to our dt tag
+                                etym = dd.get_text()
     
-                    # get the text of the term
-                    this_word_full = dt.get_text()
+                                # etymology is the value
+                                matching_words[the_word] = etym
+                                root_words[the_word] = root
     
-                    # remove (n./adj./v.) 
-                    this_word = this_word_full.split(' ')[:-2]
-                    this_word = ''.join(this_word)
+                                # yay!
+                                found_result = True
     
-                    for syn in final_synset:
-                        if syn.lower() == this_word.lower():
-                            # We have an exact match!
-    
-                            # key is the_word 
-                            # or 
-                            # key is this_word
-    
-                            # get etymology from the dd tag
-                            # corresponding to our dt tag
-                            etym = dd.get_text()
-    
-                            # etymology is the value
-                            matching_words[this_word] = etym
-    
-                            # yay!
-                            found_result = True
-    
-                            break
+                                break
     
     
             # if found_result is False,
@@ -380,7 +456,7 @@ class EtymologyCSV(object):
             if found_result:
     
                 # remember:
-                # this_word and the_word are all lowercase...
+                # the_word is lowercase
                 # just to avoid confusion.
     
                 # 
@@ -388,6 +464,8 @@ class EtymologyCSV(object):
                 if the_word in matching_words.keys():
     
                     etymology = matching_words[the_word]
+
+                    root_word = root_words[the_word]
     
                     # create a grid with location (in etymology) of each language's reference.
                     ## old way (incorrect, 'Germanic' always flags 'German' too)
@@ -442,6 +520,7 @@ class EtymologyCSV(object):
                             ranking.append(val)
     
                         ranked_langs = [languages[r] for r in ranking if r > -1] 
+                        ranked_languages = ";".join(ranked_langs)
     
                         try:
                             language1_name = ranked_langs[0]
@@ -458,7 +537,7 @@ class EtymologyCSV(object):
     
                         print the_word,":",language1_name
     
-                        etymology_info = [language1_name,language2_name,ranked_languages]
+                        etymology_info = [root_word,language1_name,language2_name,ranked_languages]
                         d = {}
                         for key,info in zip(etymology_keys,etymology_info):
                             d[key] = info
@@ -472,13 +551,17 @@ class EtymologyCSV(object):
 
             if cc%50==0:
                 print "Exporting to file..."
-                words.to_csv(self.csv_file,na_rep="",index=False)
+                words.to_csv(self.etymologies_csv_file,na_rep="",index=False)
                 print "done"
     
         print "Exporting to file..."
-        words.to_csv(self.csv_file,na_rep="",index=False)
+        words.to_csv(self.etymologies_csv_file,na_rep="",index=False)
         # also export the new words we've added to master
         master_words.to_csv(self.master_csv_file,na_rep="",index=False)
         print "done"
+
+
+
+
 
 
