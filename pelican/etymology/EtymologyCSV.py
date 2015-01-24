@@ -72,6 +72,19 @@ class EtymologyCSV(object):
 
     def get_root_word(self,the_word):
 
+        print ""
+        print "Trying to look for roots of %s"%(the_word)
+
+
+        # pick out synonyms from the synset that are basically the same word (share first 3 letters)
+        # (and also strip them of part of speech,
+        #  n., v., and so on...)
+        #
+        # synsets look like:
+        # swing.n.04
+        # 
+        # so use .split('.')[0] (first token before .)
+        #
         try:
             full_synset = Word(the_word).synsets
             full_synset_strings = [syn.name().split('.')[0] for syn in full_synset]
@@ -94,7 +107,7 @@ class EtymologyCSV(object):
         if the_word[-2:]=='ed':
             # -ed to -
             # consonant, more likely, so prepend
-            synset.prepend(the_word[:-2])
+            synset.insert(0,the_word[:-2])
 
             # -ed to -e
             synset.append(the_word[:-1])
@@ -102,40 +115,24 @@ class EtymologyCSV(object):
         # -ing
         if the_word[-3:]=='ing':
             # -ing to -
-            synset.prepend(the_word[:-3])
+            synset.insert(0,the_word[:-3])
 
         # -ly
         if the_word[-2:]=='ly':
             # -ly to -
-            synset.prepend(the_word[:-2])
+            synset.insert(0,the_word[:-2])
 
         # -es
         if the_word[-2:]=='es':
             # -es to -
-            synset.prepend(the_word[:-2])
+            synset.insert(0,the_word[:-2])
             # -es to -e
             synset.append(the_word[:-1])
 
 
 
-        import pdb; pdb.set_trace()
+        return synset
 
-
-        # pick out synonyms from the synset that are basically the same word (share first 3 letters)
-        # (and also strip them of part of speech,
-        #  n., v., and so on...)
-        #
-        # synsets look like:
-        # swing.n.04
-        # 
-        # so use .split('.')[0] (first token before .)
-        #
-
-    
-    
-        final_synset = list(set(final_synset))
-
-        return []
 
 
 
@@ -297,10 +294,16 @@ class EtymologyCSV(object):
 
 
         etymology_keys = ['root word','root language','second language','ranked languages']
+        for key in etymology_keys:
+            if key not in words.columns:
+                words[key] = ''
 
 
         # check if master word list exists
-        if os.path.isfile(self.master_csv_file):
+        #if os.path.isfile(self.master_csv_file):
+
+        # or just force make one
+        if False:
 
             print "Populating etymology information from previous master list..."
 
@@ -317,6 +320,10 @@ class EtymologyCSV(object):
                     # we need to do .values[0]
                     for key in etymology_keys:
                         words.loc[rr,key] = master_words.loc[master_words['word']==this_word,key].values[0]
+                        #try:
+                        #except:
+                        #    import pdb; pdb.set_trace()
+                        #    a=0
         else:
             master_words = pd.DataFrame([])
 
@@ -424,26 +431,25 @@ class EtymologyCSV(object):
                         this_word = this_word_full.split(' ')[:-2]
                         this_word = ''.join(this_word)
     
-                        for syn in final_synset:
-                            if syn.lower() == this_word.lower():
-                                # We have an exact match!
+                        if the_word.lower() == root.lower():
+                            # We have an exact match!
     
-                                # key is the_word 
-                                # or 
-                                # key is this_word
+                            # key is the_word 
+                            # or 
+                            # key is this_word
     
-                                # get etymology from the dd tag
-                                # corresponding to our dt tag
-                                etym = dd.get_text()
+                            # get etymology from the dd tag
+                            # corresponding to our dt tag
+                            etym = dd.get_text()
     
-                                # etymology is the value
-                                matching_words[the_word] = etym
-                                root_words[the_word] = root
+                            # etymology is the value
+                            matching_words[the_word] = etym
+                            root_words[the_word] = root
     
-                                # yay!
-                                found_result = True
+                            # yay!
+                            found_result = True
     
-                                break
+                            break
     
     
             # if found_result is False,
@@ -545,6 +551,7 @@ class EtymologyCSV(object):
                             d[key] = info
                             words.loc[cc,key] = info 
                         master_words.append([d])
+                        words.append([d])
 
             else:
                 # no result found. mark it '' and not NaN.
@@ -558,6 +565,7 @@ class EtymologyCSV(object):
     
         print "Exporting to file..."
         words.to_csv(self.etymologies_csv_file,na_rep="",index=False)
+
         # also export the new words we've added to master
         master_words.to_csv(self.master_csv_file,na_rep="",index=False)
         print "done"
