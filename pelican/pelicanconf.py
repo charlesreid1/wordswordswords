@@ -22,7 +22,7 @@ DEFAULT_LANG = u'en'
 READERS = {'html': None}
 
 
-PLUGIN_PATHS = ['/home/charles/codes/pelican-plugins/']
+PLUGIN_PATHS = ['/Users/charles/codes/pelican-plugins/']
 #PLUGINS = ['liquid_tags.include_code','liquid_tags.include_html']
 PLUGINS = ['liquid_tags','liquid_tags.include_code','liquid_tags.include_html']
 
@@ -33,7 +33,7 @@ CODE_DIR = 'code'
 # directory for include_html
 BOOKS_DIR = 'html'
 
-STATIC_PATHS = ['images','code']# don't need 'html' or original files because we're copying the html into the final page 
+STATIC_PATHS = ['images','code']
 
 
 
@@ -44,6 +44,10 @@ DISPLAY_PAGES_ON_MENU = False
 
 # dark and pastels.
 BOOTSWATCH_THEME = 'darkly'
+
+
+TEMPLATE_PAGES = {'blog.html':'blog.html'}
+
 
 
 # --------------8<---------------------

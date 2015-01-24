@@ -9,10 +9,10 @@ Page title
 #}
 
 
-{% if page.headerstyle=='jumbotron' or page.headerstyle=='book'%}
+{% if page.headerstyle=='jumbotron' or page.headerstyle=='jumbotronsplash' or page.headerstyle=='book'%}
 
     <div class="jumbotron">
-        <h1>{{ page.title }}</h1>
+        <h1>{{ SITENAME }}</h1>
         <p>Tagging word <span class="french">etymology</span> <span class="oldenglish">with</span> <span class="latin">Python</span> <span class="oldenglish">and</span> HTML .</p>
         <p>&nbsp;</p>
         {% include '_includes/key.html' %}
@@ -58,7 +58,7 @@ if page headerstyle is jumbotron,
 content is half page, half list of books.
 #}
 
-{% if page.headerstyle == 'jumbotron' %}
+{% if page.headerstyle == 'jumbotronsplash' %}
 
 <div class="row-fluid">
 
