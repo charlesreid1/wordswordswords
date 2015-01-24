@@ -73,7 +73,7 @@ class EtymologyCSV(object):
     def get_root_word(self,the_word):
 
         print ""
-        print "Trying to look for roots of %s"%(the_word)
+        print "Looking for roots of %s..."%(the_word)
 
 
         # pick out synonyms from the synset that are basically the same word (share first 3 letters)
@@ -116,6 +116,9 @@ class EtymologyCSV(object):
         if the_word[-3:]=='ing':
             # -ing to -
             synset.insert(0,the_word[:-3])
+            # -gging to -g
+            # -nning to -n
+            synset.append(the_word[:-4])
 
         # -ly
         if the_word[-2:]=='ly':
@@ -124,19 +127,25 @@ class EtymologyCSV(object):
 
         # -es
         if the_word[-2:]=='es':
-            # -es to -
-            synset.insert(0,the_word[:-2])
-            # -es to -e
-            synset.append(the_word[:-1])
+            if the_word[-3:]=='ies':
+                # -ies to -y
+                synset.insert(0,the_word[:-3]+"y")
+            else:
+                # -es to -
+                synset.insert(0,the_word[:-2])
+                # -es to -e
+                synset.append(the_word[:-1])
 
 
+        if synset<>[]:
+            print "  Trying these: %s"%( ", ".join(synset) )
 
         return synset
 
 
 
 
-    def etymonline_lookup(self,the_word):
+    def etymonline_lookup(self,lookup_word):
         """
         Returns a BeautifulSoup object
         containing the results of the search
@@ -146,7 +155,7 @@ class EtymologyCSV(object):
         response = browser.open('http://www.etymonline.com/')
         browser.select_form(nr=0)
         try:
-            browser['search'] = the_word
+            browser['search'] = lookup_word
         except TypeError:        
             pass
         resp = browser.submit()
@@ -422,16 +431,23 @@ class EtymologyCSV(object):
 
                     soup = self.etymonline_lookup(root)
 
+                    # dt = dictionary term
+                    dts = soup.find_all('dt')
+        
+                    # dd = dictionary definition
+                    dds = soup.find_all('dd')
+
                     for dt,dd in zip(dts,dds):
     
                         # get the text of the term
                         this_word_full = dt.get_text()
     
                         # remove (n./adj./v.) 
-                        this_word = this_word_full.split(' ')[:-2]
+                        #this_word = this_word_full.split(' ')[:-2]
+                        this_word = this_word_full.split(' ')[0]
                         this_word = ''.join(this_word)
     
-                        if the_word.lower() == root.lower():
+                        if root.lower() == this_word.lower():
                             # We have an exact match!
     
                             # key is the_word 
@@ -445,7 +461,7 @@ class EtymologyCSV(object):
                             # etymology is the value
                             matching_words[the_word] = etym
                             root_words[the_word] = root
-    
+
                             # yay!
                             found_result = True
     
@@ -491,6 +507,7 @@ class EtymologyCSV(object):
                         if (m and not n):
                             etymology_grid.append( m.start() )
                         else:
+                            # this may skip some languags, if Old ____ also appears, but for now, whatever.
                             etymology_grid.append(-1)
     
                     # each word is tagged with whatever language 
@@ -510,11 +527,16 @@ class EtymologyCSV(object):
                         # (Pdb) etymology_grid_gt0
                         # [239, 227, 188, 184, 71, 71, 138, 0]
                         #
-                        # (Pdb) p [languages[ii] for ii in range(len(etymology_grid)) if etymology_grid[ii] > 0]
-                        # ['Greek', 'Latin', 'Norse', 'Old Norse', 'German', 'Dutch']
-                        #
                         sorted_etymology_grid = sorted(etymology_grid_gt0)
+
+                        # rnaked_langs will contain a list of 
+                        # each language (string), ranked 
+                        ranked_langs = ['']*len(etymology_grid_gt0)
     
+                        # ranking will contain a list of
+                        # numerical rankings for each language 
+                        # (same size as list "languages")
+                        # -1 indicates lang not used
                         ranking = []
                         for ii,et in enumerate(etymology_grid):
     
@@ -525,7 +547,9 @@ class EtymologyCSV(object):
     
                             ranking.append(val)
     
-                        ranked_langs = [languages[r] for r in ranking if r > -1] 
+                        for i,r in enumerate(ranking):
+                            if r > -1:
+                                ranked_langs[r] = languages[i]
                         ranked_languages = ";".join(ranked_langs)
     
                         try:
@@ -560,13 +584,21 @@ class EtymologyCSV(object):
 
             if cc%50==0:
                 print "Exporting to file..."
-                words.to_csv(self.etymologies_csv_file,na_rep="",index=False)
+
+                words.fillna('',inplace=True)
+                words.to_csv(self.etymologies_csv_file,index=False)
+
+                master_words.fillna('',inplace=True)
+                master_words.to_csv(self.master_csv_file,index=False)
+
                 print "done"
     
         print "Exporting to file..."
+        words.fillna('',inplace=True)
         words.to_csv(self.etymologies_csv_file,na_rep="",index=False)
 
         # also export the new words we've added to master
+        master_words.fillna('',inplace=True)
         master_words.to_csv(self.master_csv_file,na_rep="",index=False)
         print "done"
 
