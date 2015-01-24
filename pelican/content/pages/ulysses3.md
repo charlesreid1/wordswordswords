@@ -1,4 +1,4 @@
-Title: Ulysses Part III
+Title: Proteus
 Authors: James Joyce
 HeaderStyle: languagekey
 save_as: ulysses3.html

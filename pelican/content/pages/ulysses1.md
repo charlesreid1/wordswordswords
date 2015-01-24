@@ -1,4 +1,4 @@
-Title: Ulysses Part I
+Title: Telemachus
 Authors: James Joyce
 HeaderStyle: languagekey
 save_as: ulysses1.html
