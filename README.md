@@ -1,14 +1,11 @@
 # Words Words Words
 
-This repo consists of a Pelican site, and all static content 
-needed to generate it.
+This repo contains Python code for tagging words based on their etymology.
+You can get more information from the [Words Words Words web site](http://charlesreid1.github.io/wordswordswords)
+or by browsing this repository.
 
-It also includes some scripts for generating interesting
-content, namely for adding etymology tags to large 
-bodies of text.
-
-## Pelican Theme
-
-Language key is in ```cmr-pelican-theme/templates/_includes/key.html```
+I am using the BeautifulSoup library to parse HTML, the Mechanize 
+library to look up words on the [Online Etymology Dictionary](http://etymonline.com),
+and Pelican to manage static content for the web site.
 
 
