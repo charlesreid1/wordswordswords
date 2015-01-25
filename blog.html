@@ -307,155 +307,155 @@ the word, to make sure that the word was longer than the suffix!
 (checking for a five-letter suffix on a four-letter word would 
 raise exceptions...)</p>
 <p>Here is the full suffix check as it currently stands:</p>
-<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get_root_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">the_word</span><span class="p">):</span>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">get_root_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">the_word</span><span class="p">):</span>
 
-        <span class="k">print</span> <span class="s">&quot;&quot;</span>
-        <span class="k">print</span> <span class="s">&quot;Looking for roots of </span><span class="si">%s</span><span class="s">...&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span>
-
-
-        <span class="c"># pick out synonyms from the synset that are basically the same word (share first 3 letters)</span>
-        <span class="c"># (and also strip them of part of speech,</span>
-        <span class="c">#  n., v., and so on...)</span>
-        <span class="c">#</span>
-        <span class="c"># synsets look like:</span>
-        <span class="c"># swing.n.04</span>
-        <span class="c"># </span>
-        <span class="c"># so use .split(&#39;.&#39;)[0] (first token before .)</span>
-        <span class="c">#</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">full_synset</span> <span class="o">=</span> <span class="n">Word</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span><span class="o">.</span><span class="n">synsets</span>
-            <span class="n">full_synset_strings</span> <span class="o">=</span> <span class="p">[</span><span class="n">syn</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">syn</span> <span class="ow">in</span> <span class="n">full_synset</span><span class="p">]</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="n">full_synset_strings</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="c"># only keep the suggested synset </span>
-        <span class="c"># if the first three letters of the synset</span>
-        <span class="c"># match the first three letters of the original word</span>
-        <span class="c"># (synset returns lots of diff words...)</span>
-        <span class="n">synset</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">sss</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">full_synset_strings</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">sss</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="n">the_word</span><span class="p">[:</span><span class="mi">3</span><span class="p">]:</span>
-                <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sss</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Looking for roots of </span><span class="si">%s</span><span class="s">...&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span>
 
 
-        <span class="c"># first try removing any common suffixes</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">4</span><span class="p">:</span>
+    <span class="c"># pick out synonyms from the synset that are basically the same word (share first 3 letters)</span>
+    <span class="c"># (and also strip them of part of speech,</span>
+    <span class="c">#  n., v., and so on...)</span>
+    <span class="c">#</span>
+    <span class="c"># synsets look like:</span>
+    <span class="c"># swing.n.04</span>
+    <span class="c"># </span>
+    <span class="c"># so use .split(&#39;.&#39;)[0] (first token before .)</span>
+    <span class="c">#</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">full_synset</span> <span class="o">=</span> <span class="n">Word</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span><span class="o">.</span><span class="n">synsets</span>
+        <span class="n">full_synset_strings</span> <span class="o">=</span> <span class="p">[</span><span class="n">syn</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">syn</span> <span class="ow">in</span> <span class="n">full_synset</span><span class="p">]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">full_synset_strings</span> <span class="o">=</span> <span class="p">[]</span>
 
-            <span class="c"># -ed</span>
-            <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ed&#39;</span><span class="p">:</span>
+    <span class="c"># only keep the suggested synset </span>
+    <span class="c"># if the first three letters of the synset</span>
+    <span class="c"># match the first three letters of the original word</span>
+    <span class="c"># (synset returns lots of diff words...)</span>
+    <span class="n">synset</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">sss</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">full_synset_strings</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sss</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="n">the_word</span><span class="p">[:</span><span class="mi">3</span><span class="p">]:</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sss</span><span class="p">)</span>
 
-                <span class="c"># -XXed to -X</span>
-                <span class="c"># wrapped to wrap, begged to beg</span>
-                <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span><span class="o">==</span><span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]:</span>
-                    <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
 
-                <span class="c"># -ied </span>
-                <span class="c"># occupied to occupy</span>
-                <span class="k">elif</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">==</span><span class="s">&#39;ied&#39;</span><span class="p">:</span>
-                    <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;y&quot;</span><span class="p">)</span>
+    <span class="c"># first try removing any common suffixes</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">4</span><span class="p">:</span>
 
-                <span class="k">else</span><span class="p">:</span>
+        <span class="c"># -ed</span>
+        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ed&#39;</span><span class="p">:</span>
 
-                    <span class="c"># -ed to -</span>
-                    <span class="c"># consonant, more likely, so prepend</span>
-                    <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
-
-                    <span class="c"># -ed to -e</span>
-                    <span class="c"># tired to tire</span>
-                    <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-
-            <span class="c"># -en</span>
-            <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;en&#39;</span><span class="p">:</span>
-                <span class="c"># -en to -</span>
-                <span class="c"># quicken to quick</span>
-                <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
-
-                <span class="c"># -en to -e</span>
-                <span class="c"># shaven to shave</span>
-                <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-
-            <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;er&#39;</span><span class="p">:</span>
-                <span class="c"># -er to -</span>
-                <span class="c"># thicker to thick</span>
-                <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
-
-                <span class="c"># -er to -e</span>
-                <span class="c"># shaver to shave</span>
-                <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-
-            <span class="c"># -est</span>
-            <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;est&#39;</span><span class="p">:</span>
-                <span class="c"># -est to -</span>
-                <span class="c"># brightest to bright</span>
+            <span class="c"># -XXed to -X</span>
+            <span class="c"># wrapped to wrap, begged to beg</span>
+            <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span><span class="o">==</span><span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]:</span>
                 <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
 
-                <span class="c"># -est to -e</span>
-                <span class="c"># widest to wide</span>
-                <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+            <span class="c"># -ied </span>
+            <span class="c"># occupied to occupy</span>
+            <span class="k">elif</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">==</span><span class="s">&#39;ied&#39;</span><span class="p">:</span>
+                <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;y&quot;</span><span class="p">)</span>
 
-            <span class="c"># -ing</span>
-            <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ing&#39;</span><span class="p">:</span>
-                <span class="c"># -ing to -</span>
-                <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
-                <span class="c"># -gging to -g</span>
-                <span class="c"># -nning to -n</span>
-                <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
-                <span class="c"># -ing to -e</span>
-                <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;e&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
 
-            <span class="c"># -ly</span>
-            <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ly&#39;</span><span class="p">:</span>
-                <span class="c"># -ly to -</span>
+                <span class="c"># -ed to -</span>
+                <span class="c"># consonant, more likely, so prepend</span>
                 <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
 
+                <span class="c"># -ed to -e</span>
+                <span class="c"># tired to tire</span>
+                <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-        <span class="c"># end if len&gt;4</span>
+        <span class="c"># -en</span>
+        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;en&#39;</span><span class="p">:</span>
+            <span class="c"># -en to -</span>
+            <span class="c"># quicken to quick</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+
+            <span class="c"># -en to -e</span>
+            <span class="c"># shaven to shave</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;er&#39;</span><span class="p">:</span>
+            <span class="c"># -er to -</span>
+            <span class="c"># thicker to thick</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+
+            <span class="c"># -er to -e</span>
+            <span class="c"># shaver to shave</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c"># -est</span>
+        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;est&#39;</span><span class="p">:</span>
+            <span class="c"># -est to -</span>
+            <span class="c"># brightest to bright</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
+
+            <span class="c"># -est to -e</span>
+            <span class="c"># widest to wide</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="c"># -ing</span>
+        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ing&#39;</span><span class="p">:</span>
+            <span class="c"># -ing to -</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
+            <span class="c"># -gging to -g</span>
+            <span class="c"># -nning to -n</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
+            <span class="c"># -ing to -e</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;e&quot;</span><span class="p">)</span>
+
+        <span class="c"># -ly</span>
+        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ly&#39;</span><span class="p">:</span>
+            <span class="c"># -ly to -</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
 
 
-        <span class="c"># -s/-es</span>
-        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;s&#39;</span><span class="p">:</span>
-
-            <span class="c"># -liness</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">6</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">6</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;liness&#39;</span><span class="p">:</span>
-                    <span class="c"># -liness to -</span>
-                    <span class="c"># friendliness to friend</span>
-                    <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">6</span><span class="p">])</span>
-
-                <span class="c"># -iness</span>
-                <span class="k">elif</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;iness&#39;</span><span class="p">:</span>
-                    <span class="c"># -iness to -y</span>
-                    <span class="c"># happiness to happy</span>
-                    <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;y&quot;</span><span class="p">)</span>
-
-            <span class="c"># -ies </span>
-            <span class="c"># -es</span>
-            <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;es&#39;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ies&#39;</span><span class="p">:</span>
-                    <span class="c"># -ies to -y</span>
-                    <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;y&quot;</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="c"># -es to -</span>
-                    <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
-                    <span class="c"># -es to -e</span>
-                    <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-
-            <span class="c"># -s to -</span>
-            <span class="k">else</span><span class="p">:</span> 
-                <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c"># end if len&gt;4</span>
 
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">5</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ation&#39;</span><span class="p">:</span>
-                <span class="c"># -ation to -ate</span>
-                <span class="c"># accumulation to accumulate</span>
-                <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;ate&quot;</span><span class="p">)</span>
+    <span class="c"># -s/-es</span>
+    <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;s&#39;</span><span class="p">:</span>
+
+        <span class="c"># -liness</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">6</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">6</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;liness&#39;</span><span class="p">:</span>
+                <span class="c"># -liness to -</span>
+                <span class="c"># friendliness to friend</span>
+                <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">6</span><span class="p">])</span>
+
+            <span class="c"># -iness</span>
+            <span class="k">elif</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;iness&#39;</span><span class="p">:</span>
+                <span class="c"># -iness to -y</span>
+                <span class="c"># happiness to happy</span>
+                <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;y&quot;</span><span class="p">)</span>
+
+        <span class="c"># -ies </span>
+        <span class="c"># -es</span>
+        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;es&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ies&#39;</span><span class="p">:</span>
+                <span class="c"># -ies to -y</span>
+                <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;y&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># -es to -</span>
+                <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+                <span class="c"># -es to -e</span>
+                <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c"># -s to -</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
 
-        <span class="k">if</span> <span class="n">synset</span><span class="o">&lt;&gt;</span><span class="p">[]:</span>
-            <span class="k">print</span> <span class="s">&quot;  Trying these: </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span> <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">synset</span><span class="p">)</span> <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">5</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ation&#39;</span><span class="p">:</span>
+            <span class="c"># -ation to -ate</span>
+            <span class="c"># accumulation to accumulate</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;ate&quot;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">synset</span>
+
+    <span class="k">if</span> <span class="n">synset</span><span class="o">&lt;&gt;</span><span class="p">[]:</span>
+        <span class="k">print</span> <span class="s">&quot;  Trying these: </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span> <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">synset</span><span class="p">)</span> <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">synset</span>
 </pre></div></div>
                 		</article>
 
