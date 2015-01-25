@@ -7,7 +7,7 @@ save_as: author.html
 
 <img width="300px" src="images/author.jpg" alt="Photo of the Author" />
 
-The Milton Bot Flock is authored by Charles Reid.
+Words Words Words is authored by Charles Reid.
 
 Charles is a chemical engineer who tinkers with Python in his free time.
 

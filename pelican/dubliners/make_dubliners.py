@@ -32,7 +32,7 @@ for im1,chapter in enumerate(chapters):
     filename = "%s%d.html"%(name,i)
 
     content = ""
-    content += "{% extends 'base.html' %}\n"
+    content += "{% extends 'bookbase.html' %}\n"
     content += "{% block title %}"
     content += title
     content += " - &mdash; {{ SITENAME }}{% endblock %}\n"
@@ -62,11 +62,18 @@ content += title
 content += " - &mdash; {{ SITENAME }}{% endblock %}\n"
 content += "{% block content %}\n\n"
 
+content += "<h1>%s</h1>\n\n"%(title)
+content += "<h2>%s</h2>\n\n"%(author)
+
+content += "<p>&nbsp;</p>\n"
+content += "<hr />\n"
+content += "<p>&nbsp;</p>\n"
+
 
 for ichm1,chapter in enumerate(chapters):
     ich = ichm1+1
 
-    link = "%s/%d/index.html"%(name,ich)
+    link = "%d/index.html"%(ich)
     linkname = chapter
     content += '<p>'
     content += '<a class="btn btn-large btn-primary" href="'+link+'">'+linkname+'</a>'
