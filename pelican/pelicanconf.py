@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = u'charlesreid1'
 SITENAME = u'Words Words Words'
-SITEURL = '/wordswordswords'
+#SITEURL = '/wordswordswords'
 
 PATH = 'content'
 
@@ -46,7 +46,18 @@ DISPLAY_PAGES_ON_MENU = False
 BOOTSWATCH_THEME = 'darkly'
 
 
+DIRECT_TEMPLATES = ('index', 'archives','book','blog')
+
 TEMPLATE_PAGES = {'blog.html':'blog.html'}
+
+# dubliners - index and 18 chapters
+TEMPLATE_PAGES['dubliners.html'] = 'dubliners/index.html'
+for im1 in range(5):
+    i = im1+1
+    key = 'dubliners%d.html'%(i)
+    val = 'dubliners/%d/index.html'%(i)
+    TEMPLATE_PAGES[key] = val
+
 
 
 
