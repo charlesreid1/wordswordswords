@@ -1,12 +1,12 @@
+print "James Joyce - Ulysses"
 
-
-for im1 in range(15):
+for im1 in range(18):
     i = im1+1
-    filename = "dubliners%d.html"%(i)
+    filename = "ulysses%d.html"%(i)
 
     content = ""
     content += "{% extends 'base.html' %}\n"
-    content += "{% block title %}Dubliners - &mdash; {{ SITENAME }}{% endblock %}\n"
+    content += "{% block title %}Ulysses - &mdash; {{ SITENAME }}{% endblock %}\n"
     content += "{% block content %}\n\n"
 
     content += "{% include '_includes/"

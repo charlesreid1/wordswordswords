@@ -22,9 +22,8 @@ DEFAULT_LANG = u'en'
 READERS = {'html': None}
 
 
-PLUGIN_PATHS = ['/Users/charles/codes/pelican-plugins/']
-#PLUGINS = ['liquid_tags.include_code','liquid_tags.include_html']
-PLUGINS = ['liquid_tags','liquid_tags.include_code','liquid_tags.include_html']
+#PLUGIN_PATHS = ['/Users/charles/codes/pelican-plugins/']
+#PLUGIN_PATHS = ['/home/charles/codes/pelican-plugins/']
 
 
 # directory for include_code
@@ -46,18 +45,33 @@ DISPLAY_PAGES_ON_MENU = False
 BOOTSWATCH_THEME = 'darkly'
 
 
+
+
 DIRECT_TEMPLATES = ('index', 'archives','book','blog')
 
 TEMPLATE_PAGES = {'blog.html':'blog.html'}
 
-# dubliners - index and 18 chapters
-TEMPLATE_PAGES['dubliners.html'] = 'dubliners/index.html'
-for im1 in range(5):
+
+
+EXTRA_TEMPLATES_PATHS = ['dubliners','ulysses']
+
+
+
+# james joyce - dubliners 
+TEMPLATE_PAGES['jjdu.html'] = 'dubliners/index.html'
+for im1 in range(15):
     i = im1+1
-    key = 'dubliners%d.html'%(i)
+    key = 'jjdu%d.html'%(i)
     val = 'dubliners/%d/index.html'%(i)
     TEMPLATE_PAGES[key] = val
 
+# james joyce - ulysses
+TEMPLATE_PAGES['jjul.html'] = 'ulysses/index.html'
+for im1 in range(18):
+    i = im1+1
+    key = 'jjul%d.html'%(i)
+    val = 'ulysses/%d/index.html'%(i)
+    TEMPLATE_PAGES[key] = val
 
 
 
