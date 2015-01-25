@@ -4,3 +4,7 @@ body {
 a {
     font-size: 18px;
 }
+pre {
+    background-color: #00384C;
+    border: 1px solid #005C77;
+}
