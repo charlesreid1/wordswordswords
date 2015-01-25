@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Blog &mdash; Words Words Words</title>
+    <meta name="author" content="charlesreid1">
+
+
+
+    <!-- http://t.co/dKP3o1e -->
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+      <link href="/wordswordswords/favicon.png" rel="icon">
+
+
+
+    <!--
+    my CSS styles
+    -->
+    <link href="/wordswordswords/theme/css/bootstrap.css"       rel="stylesheet" type="text/css">
+    <link href="/wordswordswords/theme/css/darkly.css"          rel="stylesheet" type="text/css"/>
+    <link href="/wordswordswords/theme/css/navbar.css"          rel="stylesheet" type="text/css"/>
+    <link href="/wordswordswords/theme/css/wordswordswords.css" rel="stylesheet" type="text/css"/>
+    <link href="/wordswordswords/theme/css/main.css"            rel="stylesheet" type="text/css"/>
+
+
+
+    <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic"
+          rel="stylesheet" type="text/css"/>
+    <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic"
+          rel="stylesheet" type="text/css"/>
+</head>
+
+<body>
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar navbar-nav navbar-right">
+            <a class="navbar-brand" href="index.html">words words words</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+
+                <li>
+                    <a href="/wordswordswords/index.html">Home</a>
+                </li>
+
+                <li>
+                    <a href="/wordswordswords/blog.html">Blog</a>
+                </li>
+
+                <li>
+                    <a href="/wordswordswords/author.html">Author</a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container">
+
+
+    <div class="jumbotron">
+        <h1>Words Words Words</h1>
+        <p>Tagging word <span class="french">etymology</span> <span class="oldenglish">with</span> <span class="latin">Python</span> <span class="oldenglish">and</span> HTML .</p>
+        <p>&nbsp;</p>
+<span class="french">French</span>
+<span class="oldfrench">Old Fr.</span>
+<span class="greek">Greek</span>
+<span class="latin">Latin</span>
+<span class="sanskrit">Sanskrit</span>
+<br />
+<span class="norse">Norse</span>
+<span class="oldnorse">Old Norse</span>
+<span class="german">German</span>
+<span class="germanic">Germanic</span>
+<br />
+<span class="english">English</span>
+<span class="americanenglish">American Eng.</span>
+<span class="oldenglish">Old Eng.</span>
+<span class="welsh">Welsh</span>
+<span class="irish">Irish</span>
+<span class="dutch">Dutch</span>
+<br />
+<!--
+<span class="olddutch">Old Dutch</span>
+<span class="oldsaxon">Old Saxon</span>
+<span class="russian">Russian</span>
+<span class="arabic">Arabic</span>
+<span class="spanish">Spanish</span>
+<span class="italian">Italian</span>
+<span class="slavonic">Slavonic</span>
+<span class="polish">Polish</span>
+<span class="turkish">Turkish</span>
+-->    </div>
+
+    <div class="row">
+        <div class="col-md-8 offset4" >
+            <div class="well">
+
+                <h1 class="entry-title">Missives: Words Words Words Blog</h1>
+                    
+                <p>&nbsp;</p>
+                <hr />
+                <p>&nbsp;</p>
+
+                		<article>
+<header>
+      <h1 class="entry-title">Searching for Word Roots</h1>
+    <p class="meta">
+<time datetime="2015-01-24T09:00:00-08:00" pubdate>Sat 24 January 2015</time>    </p>
+</header>
+
+  <div class="entry-content"><p>Some of the most recent improvements to the Words Words Words (WWW) code
+have been in how it deals with a failure to find a word 
+in the Online Etymology Dictionary. Some of these failures
+are due to a lack of etymology information (the name 
+"Eliza", for example). But other failures are because 
+we are looking for a conjugated verb, or a past tense
+form, or a noun-made-adverb, etc.</p>
+<p>For this reason, we can greatly improve our tag coverage
+with a few tricks. This code is in the file
+<code>etymology/EtymologyCSV.py</code> in the repository,
+and is in the method <code>EtymologyCSV::get_root_word</code>.</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">get_root_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">the_word</span><span class="p">):</span>
+
+    <span class="k">print</span> <span class="s">&quot;&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Looking for roots of </span><span class="si">%s</span><span class="s">...&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span>
+</pre></div>
+
+
+<p>I use two methods in my code:</p>
+<ul>
+<li>
+<p>TextBlob Synsets - this uses the TextBlob library to look for 
+    similar words, which often include root words.</p>
+</li>
+<li>
+<p>Common Suffixes - this tests for common suffixes, removes them,
+    and creates a list of the resulting (possible) root words</p>
+</li>
+</ul>
+<h2>TextBlob Synsets</h2>
+<p>The first thing to do is to use <a href="http://textblob.readthedocs.org">TextBlob</a>,
+a Python library, to search for its "synsets" - sets of similar words.
+While these synsets are often scattershot and include a wide range of 
+dissimilar words, they can sometimes contain the unconjugated form of a 
+verb, or a form without a suffix.</p>
+<p>To get the synsets, you have to create a TextBlob word:</p>
+<div class="highlight"><pre><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">textblob</span> <span class="kn">import</span> <span class="n">Word</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">w</span> <span class="o">=</span> <span class="n">Word</span><span class="p">(</span><span class="s">&quot;looking&quot;</span><span class="p">)</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="k">print</span> <span class="n">w</span><span class="o">.</span><span class="n">synsets</span>
+<span class="p">[</span><span class="n">Synset</span><span class="p">(</span><span class="s">&#39;look.n.02&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;looking.n.02&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;look.v.01&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;look.v.02&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;look.v.03&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;search.v.02&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;front.v.01&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;attend.v.02&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;look.v.07&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;expect.v.03&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;look.v.09&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;count.v.08&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;looking.s.01&#39;</span><span class="p">)]</span>
+</pre></div>
+
+
+<p>You can see the format of the synsets from the output.
+We can get the word by itself using <code>.split('.')[0]</code>:</p>
+<div class="highlight"><pre>    <span class="k">try</span><span class="p">:</span>
+        <span class="n">full_synset</span> <span class="o">=</span> <span class="n">Word</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span><span class="o">.</span><span class="n">synsets</span>
+        <span class="n">full_synset_strings</span> <span class="o">=</span> <span class="p">[</span><span class="n">syn</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">syn</span> <span class="ow">in</span> <span class="n">full_synset</span><span class="p">]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">full_synset_strings</span> <span class="o">=</span> <span class="p">[]</span>
+</pre></div>
+
+
+<p>Now we need a way of discarding irrelevant words in the synset.
+I found the criteria of the first three letters matching was
+sufficient for almost every case.</p>
+<div class="highlight"><pre>    <span class="n">synset</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">sss</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">full_synset_strings</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sss</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="n">the_word</span><span class="p">[:</span><span class="mi">3</span><span class="p">]:</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sss</span><span class="p">)</span>
+</pre></div>
+
+
+<h2>Common Suffixes</h2>
+<p>The next task to accomplish with the code was removing 
+common suffixes to create additional (possible) root words,
+which could then be looked up in lieu of the original at the Online
+Etymology Dictionary. </p>
+<p>A list of suffixes I checked for:</p>
+<ul>
+<li><code>-ed</code></li>
+<li><code>-ing</code></li>
+<li><code>-ly</code></li>
+<li><code>-es</code></li>
+<li><code>-ies</code></li>
+</ul>
+<p>There are two cases for removing suffixes: preceded by a consonant,
+and preceded by a vowel. The consonant case is more common,
+so these are added to the beginning of the list of possible root 
+words. The vowel cases are added to the end. </p>
+<p>This may seem hacky and may generate a few false positives, 
+but it works surprisingly well without being overly intricate.</p>
+<div class="highlight"><pre>    <span class="c"># first try removing any common suffixes</span>
+
+    <span class="c"># -ed</span>
+    <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ed&#39;</span><span class="p">:</span>
+        <span class="c"># -ed to -</span>
+        <span class="c"># consonant, more likely, so prepend</span>
+        <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="c"># -ed to -e</span>
+        <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c"># -ing</span>
+    <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ing&#39;</span><span class="p">:</span>
+        <span class="c"># -ing to -</span>
+        <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
+        <span class="c"># -gging to -g</span>
+        <span class="c"># -nning to -n</span>
+        <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
+
+    <span class="c"># -ly</span>
+    <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ly&#39;</span><span class="p">:</span>
+        <span class="c"># -ly to -</span>
+        <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="c"># -es</span>
+    <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;es&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ies&#39;</span><span class="p">:</span>
+            <span class="c"># -ies to -y</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;y&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># -es to -</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+            <span class="c"># -es to -e</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+
+
+<h2>The Final Step</h2>
+<p>Once these lists of possible root words have been assembled,
+they are returned to the main portion of the code, where 
+they are each looked up on the Online Etymology Dictionary.</p>
+<div class="highlight"><pre>    <span class="k">if</span> <span class="n">synset</span><span class="o">&lt;&gt;</span><span class="p">[]:</span>
+        <span class="k">print</span> <span class="s">&quot;  Trying these: </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span> <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">synset</span><span class="p">)</span> <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">synset</span>
+</pre></div></div>
+                		</article>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+</div><!--container-->
+
+</body>
+</html>
+
