@@ -1,13 +1,41 @@
-print "James Joyce - Dubliners"
+title = "Dubliners"
+author = "James Joyce"
+name = "dubliners"
+short = "jjdu"
+chapters = ['The Sisters',
+            'An Encounter',
+            'Araby',
+            'Eveline',
+            'After the Race',
+            'Two Gallants',
+            'The Boarding House',
+            'A Little Cloud',
+            'Counterparts',
+            'Clay',
+            'A Painful Case',
+            'Ivy Day in the Committee Room',
+            'A Mother',
+            'Grace',
+            'The Dead']
 
-for im1 in range(15):
+print author + " - " + title
+
+
+
+
+# write the template file, which contains
+# a Jinja wrapper for the tagged HTML file
+for im1,chapter in enumerate(chapters):
     i = im1+1
-    templatename = "jjdu%d.html"%(i)
-    filename = "dubliners%d.html"%(i)
+
+    templatename = "%s%d.html"%(short,i)
+    filename = "%s%d.html"%(name,i)
 
     content = ""
     content += "{% extends 'base.html' %}\n"
-    content += "{% block title %}Dubliners - &mdash; {{ SITENAME }}{% endblock %}\n"
+    content += "{% block title %}"
+    content += title
+    content += " - &mdash; {{ SITENAME }}{% endblock %}\n"
     content += "{% block content %}\n\n"
 
     content += "{% include '_includes/"
@@ -17,9 +45,39 @@ for im1 in range(15):
     content += "{% endblock %}\n"
 
 
-    print "writing file %s --> %s..."%(templatename,filename)
+    print "writing file %s (wrapping %s)..."%(templatename,filename)
     with open(templatename,'w') as f:
         f.write(content)
 
-print "done"
+
+
+# write the book index file
+# (url schema: chapter X at /bookname/X/index.html)
+indexname = "%s.html"%(short)
+
+content = ""
+content += "{% extends 'base.html' %}\n"
+content += "{% block title %}"
+content += title
+content += " - &mdash; {{ SITENAME }}{% endblock %}\n"
+content += "{% block content %}\n\n"
+
+
+for ichm1,chapter in enumerate(chapters):
+    ich = ichm1+1
+
+    link = "%s/%d/index.html"%(name,ich)
+    linkname = chapter
+    content += '<p>'
+    content += '<a class="btn btn-large btn-primary" href="'+link+'">'+linkname+'</a>'
+    content += '</p>'
+    content += "\n\n"
+
+content += "{% endblock %}\n"
+
+content += "\n\n"
+
+print "writing index file %s..."%(indexname)
+with open(indexname,'w') as f:
+    f.write(content)
 

@@ -53,9 +53,7 @@ TEMPLATE_PAGES = {'blog.html':'blog.html'}
 
 
 
-EXTRA_TEMPLATES_PATHS = ['dubliners','ulysses']
-
-
+EXTRA_TEMPLATES_PATHS = ['dubliners','ulysses','frankenstein']
 
 # james joyce - dubliners 
 TEMPLATE_PAGES['jjdu.html'] = 'dubliners/index.html'
@@ -73,6 +71,13 @@ for im1 in range(18):
     val = 'ulysses/%d/index.html'%(i)
     TEMPLATE_PAGES[key] = val
 
+# mary shelley - frankenstein
+TMEPLATE_PAGES['msfr.html'] = 'frankenstein/index.html'
+for im1 in range(28):
+    i = im1+1
+    key = 'msfr%d.html'%(i)
+    val = 'ulysses/%d/index.html'%(i)
+    TEMPLATE_PAGES[key] = val
 
 
 # --------------8<---------------------

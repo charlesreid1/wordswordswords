@@ -1,25 +1,14 @@
-title = "Ulysses"
-author = "James Joyce"
-name = "ulysses"
-short = "jjul"
-chapters = ['Telemachus',
-            'Nestor',
-            'Proteus',
-            'Calypso',
-            'Lotus Eaters',
-            'Hades',
-            'Aeolus',
-            'Lestrygonians',
-            'Scylla and Charybdis',
-            'Wandering Rocks',
-            'Sirens',
-            'Cyclops',
-            'Nausicaa',
-            'Oxen of the Sun',
-            'Circe',
-            'Eumaeus',
-            'Ithaca',
-            'Penelope']
+title = "Frankenstein"
+author = "Mary Shelley"
+name = "frankenstein"
+short = "msfr"
+chapters = []
+for im1 in range(4):
+    i = im1+1
+    chapters.append("Letter %d"%(i))
+for jm1 in range(24):
+    j = jm1+1
+    chapters.append("Chapter %d"%(j))
 
 print author + " - " + title
 
