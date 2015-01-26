@@ -66,7 +66,7 @@ for ichm1,chapter in enumerate(chapters):
     ich = ichm1+1
 
     link = "%d/index.html"%(ich)
-    linkname = "%d &mdash; %s"%(ich,chapter)
+    linkname = "%s"%(chapter)
     content += '<p>'
     content += '<a class="btn btn-large btn-primary" href="'+link+'">'+linkname+'</a>'
     content += '</p>'

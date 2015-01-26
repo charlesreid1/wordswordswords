@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = u'charlesreid1'
 SITENAME = u'Words Words Words'
-#SITEURL = '/wordswordswords'
+SITEURL = '/wordswordswords'
 
 PATH = 'content'
 
@@ -77,6 +77,15 @@ for im1 in range(28):
     i = im1+1
     key = 'msfr%d.html'%(i)
     val = 'frankenstein/%d/index.html'%(i)
+    TEMPLATE_PAGES[key] = val
+
+
+# thomas hobbes - leviathan
+TEMPLATE_PAGES['thle.html'] = 'leviathan/index.html'
+for im1 in range(28):
+    i = im1+1
+    key = 'thle%d.html'%(i)
+    val = 'leviathan/%d/index.html'%(i)
     TEMPLATE_PAGES[key] = val
 
 
