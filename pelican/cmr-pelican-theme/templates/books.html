@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Books &mdash; {{ SITENAME }}{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-8">
+{% include '_includes/books.html' %}
+    </div>
+</div>
+
+{% endblock %}

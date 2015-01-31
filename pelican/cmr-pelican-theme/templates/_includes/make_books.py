@@ -1,10 +1,14 @@
 from bs4 import BeautifulSoup as BS
+from collections import OrderedDict as od
 
 
-
-books = {}
-books['dubliners.html'] = 'Dubliners, by James Joyce'
-books['copperfield.html'] = 'David Copperfield, by Charles Dickens'
+books = od()
+books['dubliners']          = 'Dubliners, by James Joyce'
+books['ulysses']            = 'Ulysses, by James Joyce'
+books['frankenstein']       = 'Frankenstein, by Mary Shelley'
+books['crimeandpunishment'] = 'Crime and Punishment, by Fyodor Dostoyevsky (Constance Garnett translation)'
+books['roughingit']         = 'Roughing It, by Mark Twain'
+books['variableman']        = 'Variable Man, by Philip K. Dick'
 
 
 
@@ -14,6 +18,7 @@ soup = BS('''<div class="well">
         <h1>Tagged Books</h1>
         </div>
         </div>''',"html.parser")
+
 # we need 2 div tags, 
 # so we can manipulate tags
 # with beautifulsoup.
@@ -60,6 +65,10 @@ for link,book in zip(books.keys(),books.values()):
     btn_tag['href'] = link
     btn_tag['class'] = 'btn btn-large btn-success'
     btn_tag.string = "See this book's etymology"
+
+    i_tag = soup.new_tag('i')
+    i_tag['class'] = 'fa fa-arrow-circle-o-right'
+    btn_tag.append( i_tag )#soup.new_tag<i class=\"fa fa-arrow-circle-o-right\"></i>"
 
     p_tag.append(btn_tag)
     divtag_mod.append(p_tag)
