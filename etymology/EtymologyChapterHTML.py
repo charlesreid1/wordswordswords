@@ -75,9 +75,6 @@ class EtymologyChapterHTML(EtymologyHTML):
         ich=1
         for h2tag in h2tags:
 
-            if ich>1:
-                continue
-
             ## only do a particular chapter
             #if ich<15:
             #    ich += 1
