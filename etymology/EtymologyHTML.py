@@ -18,25 +18,12 @@ class EtymologyHTML(object):
     into an HTML with tagged words.
     """
 
-    def __init__(self,gutenberg_,csv_,html_,log_):
-        """
-        Set up the etymology csv object.
-
-        in_  : csv file for storing etymology information 
-        out_ : html file with tagged content
-        log_ : log file
-        """
-        self.gutenberg_file = gutenberg_
-        self.csv_file  = csv_
-        self.html_file = html_
-        self.log_file  = log_
-
     def __init__(self,name_):
         """
         Quick set up of etymology csv object.
         """
         self.gutenberg_file = "gutenberg/"+name_+".html"
-        self.csv_file  = "csv/"+name_+".csv"
+        self.csv_file  = "csv/"+name_+"_etymologies.csv"
         self.html_file = "html/"+name_+".html"
         self.log_file  = "log/"+name_+".log"
         self.temp_file = "html/temp_"+name_+".html"

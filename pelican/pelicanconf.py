@@ -47,13 +47,19 @@ BOOTSWATCH_THEME = 'darkly'
 
 
 
-DIRECT_TEMPLATES = ('index', 'archives','book','blog')
+DIRECT_TEMPLATES = ('index', 'archives','books','blog')
 
-TEMPLATE_PAGES = {'blog.html':'blog.html'}
+TEMPLATE_PAGES = {'blog.html':'blog.html',
+                  'books.html':'books.html'}
 
 
 
-EXTRA_TEMPLATES_PATHS = ['dubliners','ulysses','frankenstein']
+EXTRA_TEMPLATES_PATHS = ['dubliners',
+                         'ulysses',
+                         'frankenstein',
+                         'crimeandpunishment',
+                         'roughingit',
+                         'variableman']
 
 # james joyce - dubliners 
 TEMPLATE_PAGES['jjdu.html'] = 'dubliners/index.html'
@@ -79,13 +85,28 @@ for im1 in range(28):
     val = 'frankenstein/%d/index.html'%(i)
     TEMPLATE_PAGES[key] = val
 
-
-# thomas hobbes - leviathan
-TEMPLATE_PAGES['thle.html'] = 'leviathan/index.html'
-for im1 in range(28):
+# dostoyevsky - crime and punishment
+TEMPLATE_PAGES['fdcp.html'] = 'crimeandpunishment/index.html'
+for im1 in range(47):
     i = im1+1
-    key = 'thle%d.html'%(i)
-    val = 'leviathan/%d/index.html'%(i)
+    key = 'fdcp%d.html'%(i)
+    val = 'crimeandpunishment/%d/index.html'%(i)
+    TEMPLATE_PAGES[key] = val
+
+# mark twain - roughing it
+TEMPLATE_PAGES['mtri.html'] = 'roughingit/index.html'
+for im1 in range(83):
+    i = im1+1
+    key = 'mtri%d.html'%(i)
+    val = 'roughingit/%d/index.html'%(i)
+    TEMPLATE_PAGES[key] = val
+
+# philip k. dick - variable man
+TEMPLATE_PAGES['pdvm.html'] = 'variableman/index.html'
+for im1 in range(4):
+    i = im1+1
+    key = 'pdvm%d.html'%(i)
+    val = 'variableman/%d/index.html'%(i)
     TEMPLATE_PAGES[key] = val
 
 

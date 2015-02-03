@@ -102,39 +102,117 @@ class EtymologyCSV(object):
 
 
         # first try removing any common suffixes
+        if len(the_word)>4:
 
-        # -ed
-        if the_word[-2:]=='ed':
-            # -ed to -
-            # consonant, more likely, so prepend
-            synset.insert(0,the_word[:-2])
+            # -ed
+            if the_word[-2:]=='ed':
 
-            # -ed to -e
-            synset.append(the_word[:-1])
+                # -XXed to -X
+                # wrapped to wrap, begged to beg
+                if the_word[-4]==the_word[-3]:
+                    synset.insert(0,the_word[:-3])
 
-        # -ing
-        if the_word[-3:]=='ing':
-            # -ing to -
-            synset.insert(0,the_word[:-3])
-            # -gging to -g
-            # -nning to -n
-            synset.append(the_word[:-4])
+                # -ied 
+                # occupied to occupy
+                elif the_word[-3]=='ied':
+                    synset.insert(0,the_word[-3]+"y")
 
-        # -ly
-        if the_word[-2:]=='ly':
-            # -ly to -
-            synset.insert(0,the_word[:-2])
+                else:
 
-        # -es
-        if the_word[-2:]=='es':
-            if the_word[-3:]=='ies':
-                # -ies to -y
-                synset.insert(0,the_word[:-3]+"y")
-            else:
-                # -es to -
+                    # -ed to -
+                    # consonant, more likely, so prepend
+                    synset.insert(0,the_word[:-2])
+
+                    # -ed to -e
+                    # tired to tire
+                    synset.append(the_word[:-1])
+
+            # -en
+            if the_word[-2:]=='en':
+                # -en to -
+                # quicken to quick
                 synset.insert(0,the_word[:-2])
-                # -es to -e
+
+                # -en to -e
+                # shaven to shave
                 synset.append(the_word[:-1])
+
+            if the_word[-2:]=='er':
+                # -er to -
+                # thicker to thick
+                synset.insert(0,the_word[:-2])
+
+                # -er to -e
+                # shaver to shave
+                synset.append(the_word[:-1])
+
+            # -est
+            if the_word[-3:]=='est':
+                # -est to -
+                # brightest to bright
+                synset.insert(0,the_word[:-3])
+
+                # -est to -e
+                # widest to wide
+                synset.append(the_word[:-2])
+
+            # -ing
+            if the_word[-3:]=='ing':
+                # -ing to -
+                synset.insert(0,the_word[:-3])
+                # -gging to -g
+                # -nning to -n
+                synset.append(the_word[:-4])
+                # -ing to -e
+                synset.append(the_word[:-3]+"e")
+
+            # -ly
+            if the_word[-2:]=='ly':
+                # -ly to -
+                synset.insert(0,the_word[:-2])
+
+
+        # end if len>4
+
+
+        # -s/-es
+        if the_word[-1:]=='s':
+
+            # -liness
+            if len(the_word)>6:
+                if the_word[-6:]=='liness':
+                    # -liness to -
+                    # friendliness to friend
+                    synset.insert(0,the_word[:-6])
+
+                # -iness
+                elif the_word[-5:]=='iness':
+                    # -iness to -y
+                    # happiness to happy
+                    synset.insert(0,the_word[:-5]+"y")
+
+            # -ies 
+            # -es
+            if the_word[-2:]=='es':
+                if the_word[-3:]=='ies':
+                    # -ies to -y
+                    synset.insert(0,the_word[:-3]+"y")
+                else:
+                    # -es to -
+                    synset.insert(0,the_word[:-2])
+                    # -es to -e
+                    synset.append(the_word[:-1])
+
+            # -s to -
+            else: 
+                synset.insert(0,the_word[:-1])
+
+
+        if len(the_word)>5:
+            if the_word[-5:]=='ation':
+                # -ation to -ate
+                # accumulation to accumulate
+                synset.insert(0,the_word[:-5]+"ate")
 
 
         if synset<>[]:
@@ -309,13 +387,10 @@ class EtymologyCSV(object):
 
 
         # check if master word list exists
-        #if os.path.isfile(self.master_csv_file):
-
-        # or just force make one
-        if False:
+        if os.path.isfile(self.master_csv_file):
 
             print "Populating etymology information from previous master list..."
-
+            
             # populate any missing word etymology entries 
             # from the master word list:
             master_words = pd.read_csv(self.master_csv_file)
@@ -329,10 +404,6 @@ class EtymologyCSV(object):
                     # we need to do .values[0]
                     for key in etymology_keys:
                         words.loc[rr,key] = master_words.loc[master_words['word']==this_word,key].values[0]
-                        #try:
-                        #except:
-                        #    import pdb; pdb.set_trace()
-                        #    a=0
         else:
             master_words = pd.DataFrame([])
 
@@ -400,6 +471,7 @@ class EtymologyCSV(object):
                 this_word = this_word.strip()
 
 
+
                 if the_word.lower()==this_word.lower():
                     # We have an exact match!
     
@@ -443,10 +515,10 @@ class EtymologyCSV(object):
                         this_word_full = dt.get_text()
     
                         # remove (n./adj./v.) 
-                        #this_word = this_word_full.split(' ')[:-2]
+                        #this_word = this_word_full.split(' ')[:-2] # <-- creates occasional issues 
                         this_word = this_word_full.split(' ')[0]
                         this_word = ''.join(this_word)
-    
+
                         if root.lower() == this_word.lower():
                             # We have an exact match!
     
@@ -574,7 +646,10 @@ class EtymologyCSV(object):
                         for key,info in zip(etymology_keys,etymology_info):
                             d[key] = info
                             words.loc[cc,key] = info 
-                        master_words.append([d])
+                        if len(master_words)==0:
+                            master_words = pd.DataFrame([d])
+                        else:
+                            master_words.append([d])
                         words.append([d])
 
             else:
