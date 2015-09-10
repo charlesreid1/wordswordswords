@@ -11,10 +11,7 @@ import codecs
 
 filenames = ['crimeandpunishment.txt',
              'brotherskaramazov.txt',
-             'theidiot.txt',
-             'paradiselost.txt',
-             'copperfield.txt',
-             'mobydick.txt']
+             'theidiot.txt']
 
 
 
@@ -35,8 +32,7 @@ for ii,filename in enumerate(filenames):
         bk = f.read()
         bk = bk.replace('\r\n',' ')
 
-        ## oops. this tokenizes into SENTENCES.
-        #tok = PunktSentenceTokenizer().tokenize(bk)
+        tok = WordPunctTokenizer().tokenize(bk)
 
         num_wds = len(tok)
         print "Number of words, "+filename+":",num_wds
@@ -48,8 +44,6 @@ for ii,filename in enumerate(filenames):
         print "Lexical Richness (# uniq words/# words) %s: %0.4f"%(filename,richness)
 
         print "\n"+"-"*40+"\n\n"
-
-        import pdb; pdb.set_trace()
 
         z = [len(j) for j in tok]
 
@@ -68,4 +62,5 @@ ax.legend(loc='best')
 fig.savefig('../img/kde_wordlength.png')
 plt.show()
 plt.draw()
+
 
