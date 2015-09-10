@@ -1,12 +1,13 @@
 from __future__ import division
 import re
 import nltk
-from nltk.tokenize.punkt import PunktWordTokenizer
+from nltk.tokenize.punkt import PunktSentenceTokenizer
 from nltk.text import Text
 import matplotlib.pylab as plt
 import numpy as np
 from scipy import stats
 import brewer2mpl
+import codecs
 
 filenames = ['crimeandpunishment.txt',
              'brotherskaramazov.txt',
@@ -25,17 +26,16 @@ colors = bmap.mpl_colors
 
 for ii,filename in enumerate(filenames):
 
-    with open('data/'+filename) as f:
+    with codecs.open('../data/'+filename,encoding='utf-8') as f:
 
         print "======================================"
         print filename 
         print "======================================"
 
         bk = f.read()
-        bk = bk.replace('\r',' ')
-        bk = bk.replace('\n',' ')
+        bk = bk.replace('\r\n',' ')
 
-        tok = PunktWordTokenizer().tokenize(bk)
+        tok = PunktSentenceTokenizer().tokenize(bk)
 
         num_wds = len(tok)
         print "Length of "+filename+":",num_wds
