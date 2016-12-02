@@ -10,4 +10,4 @@ and Pelican to manage static content for the web site.
 
 Finished product: [http://charlesreid1.github.io/wordswordswords](http://charlesreid1.github.io/wordswordswords)
 
-Repository name is a reference to <u>Hamlet</u>.
+Repository name is a reference to ''Hamlet''.
