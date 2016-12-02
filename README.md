@@ -8,4 +8,6 @@ I am using the BeautifulSoup library to parse HTML, the Mechanize
 library to look up words on the [Online Etymology Dictionary](http://etymonline.com),
 and Pelican to manage static content for the web site.
 
+Finished product: [http://charlesreid1.github.io/wordswordswords](http://charlesreid1.github.io/wordswordswords)
 
+Title is a reference to Hamlet.
