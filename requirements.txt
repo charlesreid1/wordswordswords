@@ -1,0 +1,9 @@
+mechanize
+beautifulsoup4
+pandas
+textblob
+numpy
+requests
+nltk
+anthropic
+pyyaml

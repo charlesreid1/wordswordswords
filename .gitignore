@@ -1,3 +1,4 @@
+.claude
 output
 cache
 gh-pages
@@ -55,3 +56,9 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Data and Cache
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/*_progress.json

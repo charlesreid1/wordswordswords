@@ -1,0 +1,30 @@
+# Words Words Words — Configuration
+#
+# Source chain: tried in order until one succeeds.
+# Available sources: wiktionary, etymonline, llm
+#
+# The WordNet lemmatizer is a preprocessor that wraps another source,
+# not a standalone source. Enable it with use_wordnet_lemmatizer: true.
+
+sources:
+  - wiktionary
+  - etymonline
+  - llm
+
+# Wrap the first source in the chain with WordNet lemmatization
+use_wordnet_lemmatizer: true
+
+# Rate limits (seconds between requests per source)
+rate_limits:
+  etymonline: 2.0
+  wiktionary: 0.5
+
+# Concurrent lookup workers
+max_workers: 3
+
+# Cache database path (relative to etymology/ directory)
+cache_db: data/etymologies.db
+
+# LLM settings (requires ANTHROPIC_API_KEY env var)
+llm:
+  model: claude-sonnet-4-6
