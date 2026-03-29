@@ -77,7 +77,7 @@ def generate_chapter_html(gutenberg_path, etymology_data, output_dir, book_name)
     etymology_lookup = build_etymology_lookup(etymology_data)
     logger.info("Built etymology lookup with %d entries", len(etymology_lookup))
 
-    with open(gutenberg_path, 'r', encoding='utf-8') as f:
+    with open(gutenberg_path, 'r', encoding='utf-8', errors='replace') as f:
         html_doc = f.read()
     soup = BeautifulSoup(html_doc, 'html.parser')
 
@@ -149,7 +149,7 @@ def generate_full_html(gutenberg_path, etymology_data, output_path, book_name):
     etymology_lookup = build_etymology_lookup(etymology_data)
     logger.info("Built etymology lookup with %d entries", len(etymology_lookup))
 
-    with open(gutenberg_path, 'r', encoding='utf-8') as f:
+    with open(gutenberg_path, 'r', encoding='utf-8', errors='replace') as f:
         html_doc = f.read()
     soup = BeautifulSoup(html_doc, 'html.parser')
 

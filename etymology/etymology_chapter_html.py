@@ -22,7 +22,7 @@ class EtymologyChapterHTML(EtymologyHTML):
         Then loop through each paragraph, and look up
         each word in our etymology data container.
         """
-        self.dest_dir = "html"
+        self.dest_dir = "pelican/cmr-pelican-theme/templates/_includes"
 
         words = pd.read_csv(self.csv_file)
         words = words.fillna("")
@@ -33,7 +33,7 @@ class EtymologyChapterHTML(EtymologyHTML):
         etymology_lookup = self._build_etymology_lookup(words_w_lang)
 
         # save file locally
-        with open(self.gutenberg_file, 'r', encoding='utf-8') as f:
+        with open(self.gutenberg_file, 'r', encoding='utf-8', errors='replace') as f:
             html_doc = f.read()
 
         # this is the Gutenberg text

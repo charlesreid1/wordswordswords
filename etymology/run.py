@@ -154,10 +154,13 @@ def run_pipeline(book, step, config):
                 etym_csv = f"csv/{book}_etymologies.csv"
                 etymology_data = pd.read_csv(etym_csv).fillna("")
 
+        # Standard output dir for Pelican templates
+        pelican_output = "pelican/cmr-pelican-theme/templates/_includes"
+        
         generate_chapter_html(
             gutenberg_path=gutenberg_path,
             etymology_data=etymology_data,
-            output_dir="html",
+            output_dir=pelican_output,
             book_name=book,
         )
 

@@ -93,7 +93,7 @@ class EtymologyCache:
         """Look up multiple words at once. Returns dict of word -> data."""
         results = {}
         # SQLite has a variable limit; batch in groups of 500
-        words_lower = [w.lower() for w in words]
+        words_lower = [str(w).lower() for w in words]
         for i in range(0, len(words_lower), 500):
             batch = words_lower[i:i+500]
             placeholders = ','.join('?' * len(batch))
