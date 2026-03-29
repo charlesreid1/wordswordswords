@@ -56,10 +56,6 @@
                 </li>
 
                 <li>
-                    <a href="/wordswordswords/code.html">Code</a>
-                </li>
-
-                <li>
                     <a href="/wordswordswords/blog.html">Blog</a>
                 </li>
 
@@ -121,311 +117,6 @@
 
                 		<article>
 <header>
-      <h1 class="entry-title">Parsing Gutenberg with Beautiful Soup</h1>
-    <p class="meta">
-<time datetime="2015-01-31T18:00:00-08:00" pubdate>Sat 31 January 2015</time>    </p>
-</header>
-
-  <div class="entry-content"><p>The starting point for the Words Words Words (WWW) project 
-was the book - the original goal was to tag the etymology
-of each word of an entire book. Gutenberg was a natural choice
-for a starting point. </p>
-<p>In my procedure, I was parsing each Gutenberg book
-using a two-pass strategy.</p>
-<p>In the first pass of the book, I extracted all text 
-from the file, and assembled wordcounts using the 
-TextBlob library. This gives me a list of unique words
-appearing in that book. </p>
-<p>This list was then used to look up the etymology of each word
-on the Online Etymology Dictionary.</p>
-<p>In the second pass of the book, I was adding formatting tags
-to each word, based on its root language. I was then saving that
-modified HTML document to a new file, which I could then 
-put on the WWW project website.</p>
-<h2>Pass 1: Extracting Text from a Gutenberg Book</h2>
-<p>The process of extracting all text from a Gutenberg book
-involves using BeautifulSoup to locate all paragraph tags,
-extract the text from these paragraph tags, and count the 
-words of the resulting string.</p>
-<p>Here is some code to do that, without counting words in the
-table of contents:</p>
-<div class="highlight"><pre><span class="c"># ------</span>
-<span class="c"># page text</span>
-<span class="c"># &lt;p&gt;</span>
-<span class="c"># the texttags contain the text</span>
-<span class="k">print</span> <span class="s">&quot;Turning HTML into text...&quot;</span>
-<span class="n">texttags_all</span> <span class="o">=</span> <span class="p">[</span><span class="n">tt</span> <span class="k">for</span> <span class="n">tt</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s">&#39;p&#39;</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="bp">True</span><span class="p">)]</span>
-<span class="n">texttags</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">tta</span> <span class="ow">in</span> <span class="n">texttags_all</span><span class="p">:</span>
-    <span class="k">if</span> <span class="s">&#39;class&#39;</span> <span class="ow">in</span> <span class="n">tt</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">tt</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s">&#39;class&#39;</span><span class="p">]</span><span class="o">==</span><span class="s">&#39;toc&#39;</span><span class="p">:</span>
-            <span class="k">pass</span>
-    <span class="n">texttags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tta</span><span class="p">)</span>
-<span class="k">print</span> <span class="s">&quot;len(texttags) =&quot;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">texttags</span><span class="p">)</span>
-
-<span class="n">all_text</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">tt</span> <span class="ow">in</span> <span class="n">texttags</span><span class="p">:</span>
-    <span class="n">all_text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tt</span><span class="o">.</span><span class="n">string</span><span class="p">)</span>
-</pre></div>
-
-
-<p>Now the variable <code>all_text</code> is a list of strings, 
-one list element for each paragraph of the text. 
-We can join each of these together into a single string,
-and create a TextBlob object from that large string.</p>
-<div class="highlight"><pre><span class="n">s</span> <span class="o">=</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">all_text</span><span class="p">)</span>
-<span class="n">s</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-
-<span class="n">t</span> <span class="o">=</span> <span class="n">TextBlob</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-<span class="k">print</span> <span class="s">&quot;done&quot;</span>
-</pre></div>
-
-
-<p>TextBlob is a text processing library that will give us 
-access to some convenient functionality.</p>
-<p>Now that list of words can be put in a data container 
-(I am using a Pandas DataFrame):</p>
-<div class="highlight"><pre><span class="k">print</span> <span class="s">&quot;Getting word counts...&quot;</span>
-<span class="n">wc</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">word_counts</span>
-<span class="k">print</span> <span class="s">&quot;done&quot;</span>
-
-<span class="n">words</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([])</span>
-
-<span class="k">print</span> <span class="s">&quot;Populating words...&quot;</span>
-<span class="k">for</span> <span class="n">the_word</span> <span class="ow">in</span> <span class="n">wc</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-    <span class="n">the_word</span> <span class="o">=</span> <span class="n">the_word</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">d</span><span class="p">[</span><span class="s">&#39;word&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">the_word</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
-    <span class="n">d</span><span class="p">[</span><span class="s">&#39;word count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wc</span><span class="p">[</span><span class="n">the_word</span><span class="p">]</span>
-
-    <span class="n">words</span> <span class="o">=</span> <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">d</span><span class="p">])</span>
-
-<span class="k">print</span> <span class="s">&quot;done&quot;</span>
-</pre></div>
-
-
-<p>Optionally, you can sort words according to their word counts:</p>
-<div class="highlight"><pre><span class="k">print</span> <span class="s">&quot;Reindex according to word count ranking...&quot;</span>
-<span class="n">words</span> <span class="o">=</span> <span class="n">words</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;word count&#39;</span><span class="p">,</span><span class="s">&#39;word&#39;</span><span class="p">],</span><span class="n">ascending</span><span class="o">=</span><span class="p">[</span><span class="bp">False</span><span class="p">,</span><span class="bp">True</span><span class="p">])</span>
-<span class="n">words</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-<span class="k">print</span> <span class="s">&quot;done&quot;</span>
-</pre></div>
-
-
-<p>Finally, I export the DataFrame to a CSV file. This CSV file 
-then provides a convenient starting point for picking up where
-this script leaves off, which we will need to do 
-for our second pass of the Gutenberg document.</p>
-<div class="highlight"><pre><span class="k">print</span> <span class="s">&quot;Exporting to file...&quot;</span>
-<span class="n">words</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">words_csv_file</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">na_rep</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
-<span class="k">print</span> <span class="s">&quot;done&quot;</span>
-</pre></div>
-
-
-<h2>Intermediate Step: Looking Up Word Etymology</h2>
-<p>This step, which will be covered in a later post, 
-involves iterating through each unique word, 
-determining if the word has a root word,
-removing suffixes, finding unconjugated 
-forms of verbs, etc.</p>
-<p>This populates elements in the list with etymology 
-information, when it can be found.</p>
-<h2>Pass 2: Modifying Gutenberg HTML to Add Tags</h2>
-<p>Now that we have a list of each unique word in the book
-and its root language, we iterate through each paragraph 
-again, but this time check each word to see if 
-etymology information is available for it. If so, it wraps
-the word in span tags.</p>
-<p>My script works one chapter at a time.</p>
-<p>First, I look for all h2 tags, throwing out the first one
-(which is the name of the author):</p>
-<div class="highlight"><pre><span class="n">h2tags</span> <span class="o">=</span> <span class="p">[</span><span class="n">tt</span> <span class="k">for</span> <span class="n">tt</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s">&#39;h2&#39;</span><span class="p">)]</span>
-<span class="n">h2tags</span> <span class="o">=</span> <span class="n">h2tags</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-
-<span class="n">ich</span><span class="o">=</span><span class="mi">1</span>
-<span class="k">for</span> <span class="n">h2tag</span> <span class="ow">in</span> <span class="n">h2tags</span><span class="p">:</span>
-    <span class="k">print</span> <span class="s">&quot;Tagging chapter heading&quot;</span><span class="p">,</span><span class="n">ich</span>
-
-    <span class="n">h2txt</span> <span class="o">=</span> <span class="n">h2tag</span><span class="o">.</span><span class="n">string</span>
-
-    <span class="n">new_body</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="n">new_body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">unicode</span><span class="p">(</span><span class="n">h2tag</span><span class="p">))</span>
-
-    <span class="n">chapter_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ich</span><span class="p">)</span><span class="o">+</span><span class="s">&quot;.html&quot;</span>
-</pre></div>
-
-
-<p>We are at the chapter heading. We search for the next sibling tag,
-which should either be a paragraph tag or another h2 tag for 
-the next chapter heading :</p>
-<div class="highlight"><pre>    <span class="n">nexttag</span> <span class="o">=</span> <span class="n">h2tag</span><span class="o">.</span><span class="n">findNextSibling</span><span class="p">([</span><span class="s">&#39;p&#39;</span><span class="p">,</span><span class="s">&#39;h2&#39;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">nexttag</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="c"># nothing left in the document, </span>
-        <span class="c"># so exit this loop</span>
-        <span class="k">break</span>
-
-    <span class="n">ip</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-
-        <span class="k">if</span> <span class="n">nexttag</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="s">&#39;h2&#39;</span><span class="p">:</span>
-            <span class="c"># we&#39;re done with all the &lt;p&gt; tags </span>
-            <span class="c"># in this chapter</span>
-            <span class="k">break</span>
-        <span class="k">if</span> <span class="n">nexttag</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">break</span>
-
-        <span class="n">ip</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="n">ip</span><span class="o">%</span><span class="mi">25</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
-            <span class="k">print</span> <span class="s">&quot;Paragraph&quot;</span><span class="p">,</span><span class="n">ip</span>
-</pre></div>
-
-
-<p>Now we process the text in the paragraph.
-The strategy is to split sentences like</p>
-<div class="highlight"><pre>&quot;Tagging word etymology with python.&quot;
-</pre></div>
-
-
-<p>into something like:</p>
-<div class="highlight"><pre>[&quot;Tagging&quot;,&quot;word&quot;,&quot;etymology&quot;,&quot;with&quot;,&quot;python&quot;]
-</pre></div>
-
-
-<p>If a word etymology is found, the word is wrapped in div tags,
-like so:</p>
-<div class="highlight"><pre>[ ..., &#39;div class=&quot;latin&quot;&gt;python&lt;/div&gt;&#39;]
-</pre></div>
-
-
-<p>First, split the paragraph string. </p>
-<p>Iterate through each word, and search for a root language
-in the word DataFrame.</p>
-<p>If something is found, create the appropriate span tag.</p>
-<div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
-    <span class="n">split</span> <span class="o">=</span> <span class="n">nexttag</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-    <span class="c"># no text</span>
-    <span class="n">split</span> <span class="o">=</span> <span class="p">[]</span>
-
-<span class="k">if</span> <span class="n">split</span> <span class="o">&lt;&gt;</span> <span class="p">[]:</span>
-    <span class="k">for</span> <span class="n">_</span><span class="p">,</span><span class="n">word_row</span> <span class="ow">in</span> <span class="n">words_w_lang</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-
-        <span class="n">word</span> <span class="o">=</span> <span class="n">word_row</span><span class="p">[</span><span class="s">&#39;word&#39;</span><span class="p">]</span>
-        <span class="n">full_lang</span> <span class="o">=</span> <span class="n">word_row</span><span class="p">[</span><span class="s">&#39;root language&#39;</span><span class="p">]</span>
-        <span class="n">lang</span> <span class="o">=</span> <span class="n">languages_key</span><span class="p">[</span><span class="n">full_lang</span><span class="p">]</span>
-
-        <span class="k">for</span> <span class="n">it</span><span class="p">,</span><span class="n">token</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">split</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
-                <span class="n">split</span><span class="p">[</span><span class="n">it</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;&lt;span class=&quot;&#39;</span> <span class="o">+</span> <span class="n">lang</span> <span class="o">+</span> <span class="s">&#39;&quot;&gt;&#39;</span> <span class="o">+</span> <span class="n">token</span> <span class="o">+</span> <span class="s">&#39;&lt;/span&gt;&#39;</span>
-
-    <span class="n">new_html</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">split</span><span class="p">)</span>
-
-    <span class="n">new_body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">new_html</span> <span class="p">)</span>
-</pre></div>
-
-
-<p>Once we've finished, we check to see whether
-there are any remaining p or h2 tags to process.</p>
-<div class="highlight"><pre>    <span class="c"># increment the tag now, </span>
-    <span class="c"># and do a null check </span>
-    <span class="c"># (if no tag, bail out)</span>
-    <span class="n">nexttag</span> <span class="o">=</span> <span class="n">nexttag</span><span class="o">.</span><span class="n">findNextSibling</span><span class="p">([</span><span class="s">&#39;p&#39;</span><span class="p">,</span><span class="s">&#39;h2&#39;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">nexttag</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="c"># nothing left in the document, </span>
-        <span class="c"># so exit this loop</span>
-        <span class="k">break</span>
-</pre></div>
-
-
-<p>Finally, this will bring us to the end of our Gutenberg
-book. At this point, we use all of the strings we have
-been assembling and appending to <code>new_body</code> to 
-create a new BeautifulSoup document,</p>
-<div class="highlight"><pre><span class="k">print</span> <span class="s">&quot;done with chapter&quot;</span>
-
-<span class="k">print</span> <span class="s">&quot;Making some soup&quot;</span>
-<span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_body</span><span class="p">))</span>
-<span class="k">print</span> <span class="s">&quot;done&quot;</span>
-</pre></div>
-
-
-<p>We then write that soup to the chapter HTML file,
-and proceed to the next chapter:</p>
-<div class="highlight"><pre><span class="k">print</span> <span class="s">&quot;Writing to file&quot;</span><span class="p">,</span><span class="n">chapter_file</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dest_dir</span><span class="o">+</span><span class="s">&quot;/&quot;</span><span class="o">+</span><span class="n">chapter_file</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">prettify</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
-<span class="k">print</span> <span class="s">&quot;done&quot;</span>
-
-<span class="n">ich</span> <span class="o">+=</span> <span class="mi">1</span>
-</pre></div>
-
-
-<p>All there is to it.</p></div>
-                		</article>
-            </div>
-            <div class="well">
-                		<article>
-<header>
-      <h1 class="entry-title">Using Python to Crack the Etymology of Dubliners</h1>
-    <p class="meta">
-<time datetime="2015-01-30T23:00:00-08:00" pubdate>Fri 30 January 2015</time>    </p>
-</header>
-
-  <div class="entry-content"><p>The short story collection <u>Dubliners</u> by Irish author James Joyce
-has always been special to me. When I was a freshman in high school, 
-my English teacher, Dr. Miller - Doctor Mike - assigned us <u>Dubliners</u>
-as our required reading. Joyce can be bewildering to graduate students,
-let alone a high school freshman, so needless to say, it was over my head.
-But the stories were seared into my memory, and I have returned to them
-again and again throughout my life. My changing understanding of each story
-is a reflection of the evolution of my perspective.</p>
-<p>I was inspired by <a href="http://ideasillustrated.com/blog/2012/04/01/visualizing-english-word-origins/">this post from the Ideas Illustrated blog</a>,
-referenced in <a href="http://www.economist.com/blogs/johnson/2012/05/etymology">a post on the Johnson (language) blog in the Economist</a>,
-to try my hand at tagging word etymology in the same way. 
-My aim was to apply the technique to an entire book - 
-or rather, to a set of short stories.</p>
-<p>My aim was to tag the word etymologies of James Joyce's <u>Dubliners</u>.</p>
-<p>I set to work, and created code and a web page for the 
-<a href="https://github.com/charlesreid1/wordswordswords">Words Words Words</a> 
-project on GitHub. Here's a description of the project from its web page:</p>
-<p>Words Words Words uses a couple of Python libraries to do its primary tasks: 
-parse text, look up words on a web page, extract and process the result, 
-and convert the original text into HTML, color-coding each word in the 
-process with its etymological root language.</p>
-<ul>
-<li>To parse the text and extract unique words, I'm using the <a href="http://www.nltk.org">Natural Language Toolkit</a>.</li>
-<li>To scrape the web, I'm using <a href="http://wwwsearch.sourceforge.net/mechanize/">Mechanize</a>.</li>
-<li>To obtain etymological root languages for words, I'm using the <a href="http://www.etymonline.com">Online Etymology Dictionary</a>.</li>
-<li>To process the resulting HTML, I'm using <a href="http://www.crummy.com/software/BeautifulSoup/bs4/doc/">Beautiful Soup</a>.</li>
-<li>To deal with all the data resulting from these tasks, I'm using <a href="http://pandas.pydata.org/">Pandas</a>.</li>
-<li>To tag each word, I'm just using Python's built-in <code>list</code> and <code>string</code> types.</li>
-<li>To pull all of the tagged HTML, CSS stylesheets, and JS together, I'm using <a href="http://blog.getpelican.com/">Pelican</a> 
-  (my preferred Python alternative to Ruby's Jekyll)</li>
-</ul>
-<p>The result is something like what you see at the <a href="http://charlesreid1.github.io/wordswordswords/">header of the landing page</a>.
-Python is used to tag words with root languages using the Online Etymology Dictionary. 
-Each of Joyce's short stories are tagged in this way, and each story is on its own page. 
-Here is the <a href="http://charlesreid1.github.io/wordswordswords/dubliners">table of contents for the tagged version of Dubliners</a>.</p>
-<p>Right away it's clear that the dominant language in Joyce's writing is French - 
-the entire text is awash in purple words. And unlike the smatterings of green 
-German words or pale yellow English words, the French words are not commonly-recurring
-articles or prepositions; they are the more complex words, like "priesthood" and "chalice,"
-"scrupulous" and "mercy," containing the intellectual meat of the story.</p>
-<p>There's also a steady smattering of Old Norse ("<span class="oldnorse">kitchen</span>," "<span class="oldnorse">hand</span>," "<span class="oldnorse">door</span>," "<span class="oldnorse">road</span>"), 
-as well as the occasional word reaching 
-way back in time to recall Old French roots, like "<span class="oldfrench">bazaar</span>." </p>
-<p>Somewhat surprisingly (to me, anyway) was the infrequency of <span class="latin">Latin</span> 
-and <span class="greek">Greek</span> words.
-I suppose that tagging text about Stephen Dedalus might dip more heavily into those
-(<u>Ulysses</u> is on the list of books to tag next), but in <u>Dubliners</u> 
-at least, words with Latin and Greek roots are somewhat rare.</p>
-<p>Even Sanksrit shows up in <u>Dubliners</u>: in the roots of the word "<span class="sanskrit">tobacco</span>."</p></div>
-                		</article>
-            </div>
-            <div class="well">
-                		<article>
-<header>
       <h1 class="entry-title">Update to Word Root Searches</h1>
     <p class="meta">
 <time datetime="2015-01-25T14:30:00-08:00" pubdate>Sun 25 January 2015</time>    </p>
@@ -484,156 +175,257 @@ the word, to make sure that the word was longer than the suffix!
 (checking for a five-letter suffix on a four-letter word would 
 raise exceptions...)</p>
 <p>Here is the full suffix check as it currently stands:</p>
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">get_root_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">the_word</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_root_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">the_word</span><span class="p">):</span>
 
-    <span class="k">print</span> <span class="s">&quot;&quot;</span>
-    <span class="k">print</span> <span class="s">&quot;Looking for roots of </span><span class="si">%s</span><span class="s">...&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span>
+    <span class="nb">print</span> <span class="s2">&quot;&quot;</span>
+    <span class="nb">print</span> <span class="s2">&quot;Looking for roots of </span><span class="si">%s</span><span class="s2">...&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span>
 
 
-    <span class="c"># pick out synonyms from the synset that are basically the same word (share first 3 letters)</span>
-    <span class="c"># (and also strip them of part of speech,</span>
-    <span class="c">#  n., v., and so on...)</span>
-    <span class="c">#</span>
-    <span class="c"># synsets look like:</span>
-    <span class="c"># swing.n.04</span>
-    <span class="c"># </span>
-    <span class="c"># so use .split(&#39;.&#39;)[0] (first token before .)</span>
-    <span class="c">#</span>
+    <span class="c1"># pick out synonyms from the synset that are basically the same word (share first 3 letters)</span>
+    <span class="c1"># (and also strip them of part of speech,</span>
+    <span class="c1">#  n., v., and so on...)</span>
+    <span class="c1">#</span>
+    <span class="c1"># synsets look like:</span>
+    <span class="c1"># swing.n.04</span>
+    <span class="c1"># </span>
+    <span class="c1"># so use .split(&#39;.&#39;)[0] (first token before .)</span>
+    <span class="c1">#</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">full_synset</span> <span class="o">=</span> <span class="n">Word</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span><span class="o">.</span><span class="n">synsets</span>
-        <span class="n">full_synset_strings</span> <span class="o">=</span> <span class="p">[</span><span class="n">syn</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">syn</span> <span class="ow">in</span> <span class="n">full_synset</span><span class="p">]</span>
+        <span class="n">full_synset_strings</span> <span class="o">=</span> <span class="p">[</span><span class="n">syn</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">syn</span> <span class="ow">in</span> <span class="n">full_synset</span><span class="p">]</span>
     <span class="k">except</span><span class="p">:</span>
         <span class="n">full_synset_strings</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="c"># only keep the suggested synset </span>
-    <span class="c"># if the first three letters of the synset</span>
-    <span class="c"># match the first three letters of the original word</span>
-    <span class="c"># (synset returns lots of diff words...)</span>
+    <span class="c1"># only keep the suggested synset </span>
+    <span class="c1"># if the first three letters of the synset</span>
+    <span class="c1"># match the first three letters of the original word</span>
+    <span class="c1"># (synset returns lots of diff words...)</span>
     <span class="n">synset</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">sss</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">full_synset_strings</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">sss</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="n">the_word</span><span class="p">[:</span><span class="mi">3</span><span class="p">]:</span>
             <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sss</span><span class="p">)</span>
 
 
-    <span class="c"># first try removing any common suffixes</span>
+    <span class="c1"># first try removing any common suffixes</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">4</span><span class="p">:</span>
 
-        <span class="c"># -ed</span>
-        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ed&#39;</span><span class="p">:</span>
+        <span class="c1"># -ed</span>
+        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;ed&#39;</span><span class="p">:</span>
 
-            <span class="c"># -XXed to -X</span>
-            <span class="c"># wrapped to wrap, begged to beg</span>
+            <span class="c1"># -XXed to -X</span>
+            <span class="c1"># wrapped to wrap, begged to beg</span>
             <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span><span class="o">==</span><span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]:</span>
                 <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
 
-            <span class="c"># -ied </span>
-            <span class="c"># occupied to occupy</span>
-            <span class="k">elif</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">==</span><span class="s">&#39;ied&#39;</span><span class="p">:</span>
-                <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;y&quot;</span><span class="p">)</span>
+            <span class="c1"># -ied </span>
+            <span class="c1"># occupied to occupy</span>
+            <span class="k">elif</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;ied&#39;</span><span class="p">:</span>
+                <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
 
             <span class="k">else</span><span class="p">:</span>
 
-                <span class="c"># -ed to -</span>
-                <span class="c"># consonant, more likely, so prepend</span>
+                <span class="c1"># -ed to -</span>
+                <span class="c1"># consonant, more likely, so prepend</span>
                 <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
 
-                <span class="c"># -ed to -e</span>
-                <span class="c"># tired to tire</span>
+                <span class="c1"># -ed to -e</span>
+                <span class="c1"># tired to tire</span>
                 <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-        <span class="c"># -en</span>
-        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;en&#39;</span><span class="p">:</span>
-            <span class="c"># -en to -</span>
-            <span class="c"># quicken to quick</span>
+        <span class="c1"># -en</span>
+        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;en&#39;</span><span class="p">:</span>
+            <span class="c1"># -en to -</span>
+            <span class="c1"># quicken to quick</span>
             <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
 
-            <span class="c"># -en to -e</span>
-            <span class="c"># shaven to shave</span>
+            <span class="c1"># -en to -e</span>
+            <span class="c1"># shaven to shave</span>
             <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;er&#39;</span><span class="p">:</span>
-            <span class="c"># -er to -</span>
-            <span class="c"># thicker to thick</span>
+        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;er&#39;</span><span class="p">:</span>
+            <span class="c1"># -er to -</span>
+            <span class="c1"># thicker to thick</span>
             <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
 
-            <span class="c"># -er to -e</span>
-            <span class="c"># shaver to shave</span>
+            <span class="c1"># -er to -e</span>
+            <span class="c1"># shaver to shave</span>
             <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-        <span class="c"># -est</span>
-        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;est&#39;</span><span class="p">:</span>
-            <span class="c"># -est to -</span>
-            <span class="c"># brightest to bright</span>
+        <span class="c1"># -est</span>
+        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;est&#39;</span><span class="p">:</span>
+            <span class="c1"># -est to -</span>
+            <span class="c1"># brightest to bright</span>
             <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
 
-            <span class="c"># -est to -e</span>
-            <span class="c"># widest to wide</span>
+            <span class="c1"># -est to -e</span>
+            <span class="c1"># widest to wide</span>
             <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
 
-        <span class="c"># -ing</span>
-        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ing&#39;</span><span class="p">:</span>
-            <span class="c"># -ing to -</span>
+        <span class="c1"># -ing</span>
+        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;ing&#39;</span><span class="p">:</span>
+            <span class="c1"># -ing to -</span>
             <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
-            <span class="c"># -gging to -g</span>
-            <span class="c"># -nning to -n</span>
+            <span class="c1"># -gging to -g</span>
+            <span class="c1"># -nning to -n</span>
             <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
-            <span class="c"># -ing to -e</span>
-            <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;e&quot;</span><span class="p">)</span>
+            <span class="c1"># -ing to -e</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;e&quot;</span><span class="p">)</span>
 
-        <span class="c"># -ly</span>
-        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ly&#39;</span><span class="p">:</span>
-            <span class="c"># -ly to -</span>
+        <span class="c1"># -ly</span>
+        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;ly&#39;</span><span class="p">:</span>
+            <span class="c1"># -ly to -</span>
             <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
 
 
-    <span class="c"># end if len&gt;4</span>
+    <span class="c1"># end if len&gt;4</span>
 
 
-    <span class="c"># -s/-es</span>
-    <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;s&#39;</span><span class="p">:</span>
+    <span class="c1"># -s/-es</span>
+    <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;s&#39;</span><span class="p">:</span>
 
-        <span class="c"># -liness</span>
+        <span class="c1"># -liness</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">6</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">6</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;liness&#39;</span><span class="p">:</span>
-                <span class="c"># -liness to -</span>
-                <span class="c"># friendliness to friend</span>
+            <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">6</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;liness&#39;</span><span class="p">:</span>
+                <span class="c1"># -liness to -</span>
+                <span class="c1"># friendliness to friend</span>
                 <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">6</span><span class="p">])</span>
 
-            <span class="c"># -iness</span>
-            <span class="k">elif</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;iness&#39;</span><span class="p">:</span>
-                <span class="c"># -iness to -y</span>
-                <span class="c"># happiness to happy</span>
-                <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;y&quot;</span><span class="p">)</span>
+            <span class="c1"># -iness</span>
+            <span class="k">elif</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;iness&#39;</span><span class="p">:</span>
+                <span class="c1"># -iness to -y</span>
+                <span class="c1"># happiness to happy</span>
+                <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
 
-        <span class="c"># -ies </span>
-        <span class="c"># -es</span>
-        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;es&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ies&#39;</span><span class="p">:</span>
-                <span class="c"># -ies to -y</span>
-                <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;y&quot;</span><span class="p">)</span>
+        <span class="c1"># -ies </span>
+        <span class="c1"># -es</span>
+        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;es&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;ies&#39;</span><span class="p">:</span>
+                <span class="c1"># -ies to -y</span>
+                <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c"># -es to -</span>
+                <span class="c1"># -es to -</span>
                 <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
-                <span class="c"># -es to -e</span>
+                <span class="c1"># -es to -e</span>
                 <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-        <span class="c"># -s to -</span>
+        <span class="c1"># -s to -</span>
         <span class="k">else</span><span class="p">:</span> 
             <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">5</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ation&#39;</span><span class="p">:</span>
-            <span class="c"># -ation to -ate</span>
-            <span class="c"># accumulation to accumulate</span>
-            <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;ate&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;ation&#39;</span><span class="p">:</span>
+            <span class="c1"># -ation to -ate</span>
+            <span class="c1"># accumulation to accumulate</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;ate&quot;</span><span class="p">)</span>
 
 
     <span class="k">if</span> <span class="n">synset</span><span class="o">&lt;&gt;</span><span class="p">[]:</span>
-        <span class="k">print</span> <span class="s">&quot;  Trying these: </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span> <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">synset</span><span class="p">)</span> <span class="p">)</span>
+        <span class="nb">print</span> <span class="s2">&quot;  Trying these: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">synset</span><span class="p">)</span> <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">synset</span>
-</pre></div></div>
+</code></pre></div></div>
+                		</article>
+            </div>
+            <div class="well">
+                		<article>
+<header>
+      <h1 class="entry-title">Creating New Pelican Templates</h1>
+    <p class="meta">
+<time datetime="2015-01-24T09:00:00-08:00" pubdate>Sat 24 January 2015</time>    </p>
+</header>
+
+  <div class="entry-content"><p>The Words Words Words (WWW) library uses the Online Etymology Dictionary and HTML to color-tag
+each word in a body of text based on its etymology and root language.
+This means that the output of the WWW scripts is usually a directory
+full of HTML files (one HTML file per chapter).</p>
+<p>I had to figure out what to do with this HTML, and how to embed it in Pelican pages.
+(Pelican is the Python static content generator that I am using to create the 
+WWW project page.)</p>
+<h2>The Plugin Approach</h2>
+<p>I began by writing a Pelican plugin that would allow me to use Liquid tags to include
+HTML files into a Markdown document, like this:</p>
+<div class="highlight"><pre><span></span><code>{% include_html &#39;some_html_file.html&#39; %}
+</code></pre></div>
+
+<p>The problem with this approach, though, is that the plugin basically imports
+the HTML file as one big string in the final Markdown document, storing it 
+in memory as the rest of the document is constructed. 
+But this makes the plugin approach unbearably slow.<br>
+Generating the website content with more than one book would take
+upwards of an hour. Minor changes required re-making the site each time.
+This was not an acceptable or scalable solution, since my goal was to add
+a large number of books.</p>
+<h2>The Template Approach</h2>
+<p>I hit upon a solution when I delved into the template features of Pelican.
+Pelican allows you to define new templates, and you can inject large 
+HTML documents directly using Jinja templating syntax. This means you can
+create a template like <code>dummy.html</code> in the <code>templates/</code> directory
+of your theme, and insert HTML documents using include statements:</p>
+<div class="highlight"><pre><span></span><code>{% include &#39;_includes/some_html_file.html&#39; %}
+</code></pre></div>
+
+<p>Then you can edit your <code>pelicanconfig.py</code> file to tell Pelican about your
+new template:</p>
+<div class="highlight"><pre><span></span><code>TEMPLATE_PAGES = {}
+TEMPLATE_PAGES[&#39;dummy.html&#39;] = &#39;custom/path/to/dummy/index.html&#39;
+</code></pre></div>
+
+<p>The key is the name of the template file; the value is the 
+custom URL path that you want the template to have.</p>
+<h2>The Pelican Solution</h2>
+<p>I still had a problem, however, that a given book might have
+upwards of 50 chapters, meaning 50 HTML files. Still not a 
+scalable solution.</p>
+<p>But Python came to the rescue! I was able to use Python to 
+accomplish three tasks:</p>
+<ul>
+<li>Create a Python script to automatically create a new HTML template 
+    file for each book chapter;</li>
+<li>Create a central index file for each book, with buttons for each book chapter;</li>
+<li>Populate the <code>TEMPLATE_PAGES</code> dictionary automatically.</li>
+</ul>
+<p>This last bullet is possible, because the config file is 
+written in... Python!</p>
+<h2>Creating HTML Template Files</h2>
+<p>In my templates directory, I have a script that automatically 
+creates an HTML file that has the theme's header and footer,
+and populates the page content with the HTML files 
+generated by WWW scripts. Here is my script <code>make_dubliners.py</code>,
+for creating pages for each chapter of James Joyce's Dubliners:</p>
+<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">im1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">im1</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;dubliners</span><span class="si">%d</span><span class="s2">.html&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+    <span class="n">content</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">content</span> <span class="o">+=</span> <span class="s2">&quot;{</span><span class="si">% e</span><span class="s2">xtends &#39;base.html&#39; %}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">content</span> <span class="o">+=</span> <span class="s2">&quot;{% block title %}Dubliners - &amp;mdash; {{ SITENAME }}{</span><span class="si">% e</span><span class="s2">ndblock %}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">content</span> <span class="o">+=</span> <span class="s2">&quot;{% block content %}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+
+    <span class="n">content</span> <span class="o">+=</span> <span class="s2">&quot;{</span><span class="si">% i</span><span class="s2">nclude &#39;_includes/&quot;</span>
+    <span class="n">content</span> <span class="o">+=</span> <span class="n">filename</span> 
+    <span class="n">content</span> <span class="o">+=</span> <span class="s2">&quot;&#39; %}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+
+    <span class="n">content</span> <span class="o">+=</span> <span class="s2">&quot;{</span><span class="si">% e</span><span class="s2">ndblock %}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+
+    <span class="nb">print</span> <span class="s2">&quot;writing html file </span><span class="si">%s</span><span class="s2">...&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+<span class="nb">print</span> <span class="s2">&quot;done&quot;</span>
+</code></pre></div>
+
+<h2>Populating TEMPLATE_PAGES</h2>
+<p>Here is how I automatically populated the <code>TEMPLATE_PAGES</code> 
+variable for James Joyce's book Dubliners:</p>
+<div class="highlight"><pre><span></span><code><span class="n">TEMPLATE_PAGES</span><span class="p">[</span><span class="s1">&#39;dubliners.html&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;dubliners/index.html&#39;</span>
+<span class="k">for</span> <span class="n">im1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">im1</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;dubliners</span><span class="si">%d</span><span class="s1">.html&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="s1">&#39;dubliners/</span><span class="si">%d</span><span class="s1">/index.html&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">TEMPLATE_PAGES</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+</code></pre></div></div>
                 		</article>
             </div>
             <div class="well">
@@ -655,12 +447,11 @@ form, or a noun-made-adverb, etc.</p>
 with a few tricks. This code is in the file
 <code>etymology/EtymologyCSV.py</code> in the repository,
 and is in the method <code>EtymologyCSV::get_root_word</code>.</p>
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">get_root_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">the_word</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_root_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">the_word</span><span class="p">):</span>
 
-    <span class="k">print</span> <span class="s">&quot;&quot;</span>
-    <span class="k">print</span> <span class="s">&quot;Looking for roots of </span><span class="si">%s</span><span class="s">...&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span>
-</pre></div>
-
+    <span class="nb">print</span> <span class="s2">&quot;&quot;</span>
+    <span class="nb">print</span> <span class="s2">&quot;Looking for roots of </span><span class="si">%s</span><span class="s2">...&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span>
+</code></pre></div>
 
 <p>I use two methods in my code:</p>
 <ul>
@@ -680,34 +471,31 @@ While these synsets are often scattershot and include a wide range of
 dissimilar words, they can sometimes contain the unconjugated form of a 
 verb, or a form without a suffix.</p>
 <p>To get the synsets, you have to create a TextBlob word:</p>
-<div class="highlight"><pre><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">textblob</span> <span class="kn">import</span> <span class="n">Word</span>
+<div class="highlight"><pre><span></span><code><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">textblob</span> <span class="kn">import</span> <span class="n">Word</span>
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">w</span> <span class="o">=</span> <span class="n">Word</span><span class="p">(</span><span class="s">&quot;looking&quot;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">w</span> <span class="o">=</span> <span class="n">Word</span><span class="p">(</span><span class="s2">&quot;looking&quot;</span><span class="p">)</span>
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="k">print</span> <span class="n">w</span><span class="o">.</span><span class="n">synsets</span>
-<span class="p">[</span><span class="n">Synset</span><span class="p">(</span><span class="s">&#39;look.n.02&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;looking.n.02&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;look.v.01&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;look.v.02&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;look.v.03&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;search.v.02&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;front.v.01&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;attend.v.02&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;look.v.07&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;expect.v.03&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;look.v.09&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;count.v.08&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s">&#39;looking.s.01&#39;</span><span class="p">)]</span>
-</pre></div>
-
+<span class="n">In</span> <span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="nb">print</span> <span class="n">w</span><span class="o">.</span><span class="n">synsets</span>
+<span class="p">[</span><span class="n">Synset</span><span class="p">(</span><span class="s1">&#39;look.n.02&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s1">&#39;looking.n.02&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s1">&#39;look.v.01&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s1">&#39;look.v.02&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s1">&#39;look.v.03&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s1">&#39;search.v.02&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s1">&#39;front.v.01&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s1">&#39;attend.v.02&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s1">&#39;look.v.07&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s1">&#39;expect.v.03&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s1">&#39;look.v.09&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s1">&#39;count.v.08&#39;</span><span class="p">),</span> <span class="n">Synset</span><span class="p">(</span><span class="s1">&#39;looking.s.01&#39;</span><span class="p">)]</span>
+</code></pre></div>
 
 <p>You can see the format of the synsets from the output.
 We can get the word by itself using <code>.split('.')[0]</code>:</p>
-<div class="highlight"><pre>    <span class="k">try</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><code>    <span class="k">try</span><span class="p">:</span>
         <span class="n">full_synset</span> <span class="o">=</span> <span class="n">Word</span><span class="p">(</span><span class="n">the_word</span><span class="p">)</span><span class="o">.</span><span class="n">synsets</span>
-        <span class="n">full_synset_strings</span> <span class="o">=</span> <span class="p">[</span><span class="n">syn</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">syn</span> <span class="ow">in</span> <span class="n">full_synset</span><span class="p">]</span>
+        <span class="n">full_synset_strings</span> <span class="o">=</span> <span class="p">[</span><span class="n">syn</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">syn</span> <span class="ow">in</span> <span class="n">full_synset</span><span class="p">]</span>
     <span class="k">except</span><span class="p">:</span>
         <span class="n">full_synset_strings</span> <span class="o">=</span> <span class="p">[]</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Now we need a way of discarding irrelevant words in the synset.
 I found the criteria of the first three letters matching was
 sufficient for almost every case.</p>
-<div class="highlight"><pre>    <span class="n">synset</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="highlight"><pre><span></span><code>    <span class="n">synset</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">sss</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">full_synset_strings</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">sss</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="n">the_word</span><span class="p">[:</span><span class="mi">3</span><span class="p">]:</span>
             <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sss</span><span class="p">)</span>
-</pre></div>
-
+</code></pre></div>
 
 <h2>Common Suffixes</h2>
 <p>The next task to accomplish with the code was removing 
@@ -728,76 +516,61 @@ so these are added to the beginning of the list of possible root
 words. The vowel cases are added to the end. </p>
 <p>This may seem hacky and may generate a few false positives, 
 but it works surprisingly well without being overly intricate.</p>
-<div class="highlight"><pre>    <span class="c"># first try removing any common suffixes</span>
+<div class="highlight"><pre><span></span><code>    <span class="c1"># first try removing any common suffixes</span>
 
-    <span class="c"># -ed</span>
-    <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ed&#39;</span><span class="p">:</span>
-        <span class="c"># -ed to -</span>
-        <span class="c"># consonant, more likely, so prepend</span>
+    <span class="c1"># -ed</span>
+    <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;ed&#39;</span><span class="p">:</span>
+        <span class="c1"># -ed to -</span>
+        <span class="c1"># consonant, more likely, so prepend</span>
         <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
 
-        <span class="c"># -ed to -e</span>
+        <span class="c1"># -ed to -e</span>
         <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-    <span class="c"># -ing</span>
-    <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ing&#39;</span><span class="p">:</span>
-        <span class="c"># -ing to -</span>
+    <span class="c1"># -ing</span>
+    <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;ing&#39;</span><span class="p">:</span>
+        <span class="c1"># -ing to -</span>
         <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
-        <span class="c"># -gging to -g</span>
-        <span class="c"># -nning to -n</span>
+        <span class="c1"># -gging to -g</span>
+        <span class="c1"># -nning to -n</span>
         <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
 
-    <span class="c"># -ly</span>
-    <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ly&#39;</span><span class="p">:</span>
-        <span class="c"># -ly to -</span>
+    <span class="c1"># -ly</span>
+    <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;ly&#39;</span><span class="p">:</span>
+        <span class="c1"># -ly to -</span>
         <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
 
-    <span class="c"># -es</span>
-    <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;es&#39;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s">&#39;ies&#39;</span><span class="p">:</span>
-            <span class="c"># -ies to -y</span>
-            <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;y&quot;</span><span class="p">)</span>
+    <span class="c1"># -es</span>
+    <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;es&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">the_word</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span><span class="o">==</span><span class="s1">&#39;ies&#39;</span><span class="p">:</span>
+            <span class="c1"># -ies to -y</span>
+            <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c"># -es to -</span>
+            <span class="c1"># -es to -</span>
             <span class="n">synset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
-            <span class="c"># -es to -e</span>
+            <span class="c1"># -es to -e</span>
             <span class="n">synset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">the_word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-</pre></div>
-
+</code></pre></div>
 
 <h2>The Final Step</h2>
 <p>Once these lists of possible root words have been assembled,
 they are returned to the main portion of the code, where 
 they are each looked up on the Online Etymology Dictionary.</p>
-<div class="highlight"><pre>    <span class="k">if</span> <span class="n">synset</span><span class="o">&lt;&gt;</span><span class="p">[]:</span>
-        <span class="k">print</span> <span class="s">&quot;  Trying these: </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span> <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">synset</span><span class="p">)</span> <span class="p">)</span>
+<div class="highlight"><pre><span></span><code>    <span class="k">if</span> <span class="n">synset</span><span class="o">&lt;&gt;</span><span class="p">[]:</span>
+        <span class="nb">print</span> <span class="s2">&quot;  Trying these: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">synset</span><span class="p">)</span> <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">synset</span>
-</pre></div></div>
+</code></pre></div></div>
                 		</article>
             </div>
             <div class="well">
 
-                <p>End of Article List</p>
-
             </div>
         </div>
-
-
-        <div class="col-md-4" >
-<div id="blog-archives">
-    <h3>Blog Archives:</h3>
-    <ul>
-                    <li class="archive"><a href="/wordswordswords/parsing-gutenberg-with-beautiful-soup.html">Parsing Gutenberg with Beautiful Soup</a></li>
-                    <li class="archive"><a href="/wordswordswords/using-python-to-crack-the-etymology-of-dubliners.html">Using Python to Crack the Etymology of Dubliners</a></li>
-                    <li class="archive"><a href="/wordswordswords/update-to-word-root-searches.html">Update to Word Root Searches</a></li>
-                    <li class="archive"><a href="/wordswordswords/searching-for-word-roots.html">Searching for Word Roots</a></li>
-    </ul>
-</div>
-
-        </div>
-
     </div>
+
+
+
 
 
 

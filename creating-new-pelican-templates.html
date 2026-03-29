@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Creating New Pelican Templates &mdash; Words Words Words</title>
+    <meta name="author" content="charlesreid1">
+
+
+
+    <!-- http://t.co/dKP3o1e -->
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+      <link href="/wordswordswords/favicon.png" rel="icon">
+
+
+
+    <!--
+    my CSS styles
+    -->
+    <link href="/wordswordswords/theme/css/bootstrap.css"        rel="stylesheet" type="text/css">
+    <link href="/wordswordswords/theme/css/darkly.css"           rel="stylesheet" type="text/css"/>
+    <link href="/wordswordswords/theme/css/navbar.css"           rel="stylesheet" type="text/css"/>
+    <link href="/wordswordswords/theme/css/wordswordswords.css"  rel="stylesheet" type="text/css"/>
+    <link href="/wordswordswords/theme/css/pygment.css"          rel="stylesheet" type="text/css"/>
+    <link href="/wordswordswords/theme/css/main.css"             rel="stylesheet" type="text/css"/>
+
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic"
+          rel="stylesheet" type="text/css"/>
+    <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic"
+          rel="stylesheet" type="text/css"/>
+</head>
+
+<body>
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar navbar-nav navbar-right">
+            <a class="navbar-brand" href="index.html">words words words</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+
+                <li>
+                    <a href="/wordswordswords/index.html">Home</a>
+                </li>
+
+                <li>
+                    <a href="/wordswordswords/books.html">Books</a>
+                </li>
+
+                <li>
+                    <a href="/wordswordswords/blog.html">Blog</a>
+                </li>
+
+                <li>
+                    <a href="/wordswordswords/author.html">Author</a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container">
+
+<div>
+  <article class="hentry" role="article">
+<header>
+      <h1 class="entry-title">Creating New Pelican Templates</h1>
+    <p class="meta">
+<time datetime="2015-01-24T09:00:00-08:00" pubdate>Sat 24 January 2015</time>    </p>
+</header>
+
+  <div class="entry-content"><p>The Words Words Words (WWW) library uses the Online Etymology Dictionary and HTML to color-tag
+each word in a body of text based on its etymology and root language.
+This means that the output of the WWW scripts is usually a directory
+full of HTML files (one HTML file per chapter).</p>
+<p>I had to figure out what to do with this HTML, and how to embed it in Pelican pages.
+(Pelican is the Python static content generator that I am using to create the 
+WWW project page.)</p>
+<h2>The Plugin Approach</h2>
+<p>I began by writing a Pelican plugin that would allow me to use Liquid tags to include
+HTML files into a Markdown document, like this:</p>
+<div class="highlight"><pre><span></span><code>{% include_html &#39;some_html_file.html&#39; %}
+</code></pre></div>
+
+<p>The problem with this approach, though, is that the plugin basically imports
+the HTML file as one big string in the final Markdown document, storing it 
+in memory as the rest of the document is constructed. 
+But this makes the plugin approach unbearably slow.<br>
+Generating the website content with more than one book would take
+upwards of an hour. Minor changes required re-making the site each time.
+This was not an acceptable or scalable solution, since my goal was to add
+a large number of books.</p>
+<h2>The Template Approach</h2>
+<p>I hit upon a solution when I delved into the template features of Pelican.
+Pelican allows you to define new templates, and you can inject large 
+HTML documents directly using Jinja templating syntax. This means you can
+create a template like <code>dummy.html</code> in the <code>templates/</code> directory
+of your theme, and insert HTML documents using include statements:</p>
+<div class="highlight"><pre><span></span><code>{% include &#39;_includes/some_html_file.html&#39; %}
+</code></pre></div>
+
+<p>Then you can edit your <code>pelicanconfig.py</code> file to tell Pelican about your
+new template:</p>
+<div class="highlight"><pre><span></span><code>TEMPLATE_PAGES = {}
+TEMPLATE_PAGES[&#39;dummy.html&#39;] = &#39;custom/path/to/dummy/index.html&#39;
+</code></pre></div>
+
+<p>The key is the name of the template file; the value is the 
+custom URL path that you want the template to have.</p>
+<h2>The Pelican Solution</h2>
+<p>I still had a problem, however, that a given book might have
+upwards of 50 chapters, meaning 50 HTML files. Still not a 
+scalable solution.</p>
+<p>But Python came to the rescue! I was able to use Python to 
+accomplish three tasks:</p>
+<ul>
+<li>Create a Python script to automatically create a new HTML template 
+    file for each book chapter;</li>
+<li>Create a central index file for each book, with buttons for each book chapter;</li>
+<li>Populate the <code>TEMPLATE_PAGES</code> dictionary automatically.</li>
+</ul>
+<p>This last bullet is possible, because the config file is 
+written in... Python!</p>
+<h2>Creating HTML Template Files</h2>
+<p>In my templates directory, I have a script that automatically 
+creates an HTML file that has the theme's header and footer,
+and populates the page content with the HTML files 
+generated by WWW scripts. Here is my script <code>make_dubliners.py</code>,
+for creating pages for each chapter of James Joyce's Dubliners:</p>
+<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">im1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">im1</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;dubliners</span><span class="si">%d</span><span class="s2">.html&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+    <span class="n">content</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">content</span> <span class="o">+=</span> <span class="s2">&quot;{</span><span class="si">% e</span><span class="s2">xtends &#39;base.html&#39; %}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">content</span> <span class="o">+=</span> <span class="s2">&quot;{% block title %}Dubliners - &amp;mdash; {{ SITENAME }}{</span><span class="si">% e</span><span class="s2">ndblock %}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">content</span> <span class="o">+=</span> <span class="s2">&quot;{% block content %}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+
+    <span class="n">content</span> <span class="o">+=</span> <span class="s2">&quot;{</span><span class="si">% i</span><span class="s2">nclude &#39;_includes/&quot;</span>
+    <span class="n">content</span> <span class="o">+=</span> <span class="n">filename</span> 
+    <span class="n">content</span> <span class="o">+=</span> <span class="s2">&quot;&#39; %}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+
+    <span class="n">content</span> <span class="o">+=</span> <span class="s2">&quot;{</span><span class="si">% e</span><span class="s2">ndblock %}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+
+    <span class="nb">print</span> <span class="s2">&quot;writing html file </span><span class="si">%s</span><span class="s2">...&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+<span class="nb">print</span> <span class="s2">&quot;done&quot;</span>
+</code></pre></div>
+
+<h2>Populating TEMPLATE_PAGES</h2>
+<p>Here is how I automatically populated the <code>TEMPLATE_PAGES</code> 
+variable for James Joyce's book Dubliners:</p>
+<div class="highlight"><pre><span></span><code><span class="n">TEMPLATE_PAGES</span><span class="p">[</span><span class="s1">&#39;dubliners.html&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;dubliners/index.html&#39;</span>
+<span class="k">for</span> <span class="n">im1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">im1</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;dubliners</span><span class="si">%d</span><span class="s1">.html&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="s1">&#39;dubliners/</span><span class="si">%d</span><span class="s1">/index.html&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">TEMPLATE_PAGES</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+</code></pre></div></div>
+    <footer>
+<p class="meta">
+  <span class="byline author vcard">
+    Posted by <span class="fn">
+        charlesreid1
+    </span>
+  </span>
+<time datetime="2015-01-24T09:00:00-08:00" pubdate>Sat 24 January 2015</time>  <span class="categories">
+    <a class='category' href='/wordswordswords/category/misc.html'>misc</a>
+  </span>
+</p><div class="sharing">
+</div>    </footer>
+  </article>
+
+</div>
+
+</div><!--container-->
+
+</body>
+</html>
+
