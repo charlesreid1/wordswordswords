@@ -215,14 +215,20 @@ def main():
     if not args.book or not args.step:
         parser.error("--book and --step are required unless using --migrate")
 
-    if args.book not in KNOWN_BOOKS:
-        logging.warning("Book '%s' is not in the known books list. Proceeding anyway.", args.book)
+    books_to_process = [args.book]
+    if args.book == 'all':
+        books_to_process = KNOWN_BOOKS
 
-    if args.mode == 'legacy':
-        run_legacy(args.book, args.step)
-    else:
-        config = load_config(args.config)
-        run_pipeline(args.book, args.step, config)
+    for book in books_to_process:
+        if book not in KNOWN_BOOKS and args.book != 'all':
+            logging.warning("Book '%s' is not in the known books list. Proceeding anyway.", book)
+
+        logging.info("Processing book: %s", book)
+        if args.mode == 'legacy':
+            run_legacy(book, args.step)
+        else:
+            config = load_config(args.config)
+            run_pipeline(book, args.step, config)
 
 
 if __name__ == '__main__':
