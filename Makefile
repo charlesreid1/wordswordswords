@@ -5,7 +5,9 @@ BOOKS = $(shell python3 -c "import yaml; print(' '.join(yaml.safe_load(open('boo
 
 PELICAN_THEME_INCLUDES = pelican/cmr-pelican-theme/templates/_includes
 
-all: setup etymology pelican-templates pelican
+all: setup etymology pelican-templates pelican deploy
+
+all-but-deploy: setup etymology pelican-templates pelican
 
 setup:
 	@echo "--- Ensuring template directories exist ---"

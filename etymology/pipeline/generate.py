@@ -84,13 +84,55 @@ def generate_chapter_html(gutenberg_path, etymology_data, output_dir, book_name)
     os.makedirs(output_dir, exist_ok=True)
 
     # Extract title and author
-    titletag = soup.findAll('h1', text=True)[0]
-    title = titletag.string
+    titletag = soup.findAll('h1')[0]
+    title = titletag.get_text()
 
-    authortag = soup.findAll('h2', text=True)[0]
-    author = re.sub('By ', '', authortag.string)
+    # Try to find author in h2 first, then h3
+    authortag = None
+    h2_tags = soup.findAll('h2')
+    if h2_tags:
+        authortag = h2_tags[0]
+    else:
+        h3_tags = soup.findAll('h3')
+        if h3_tags:
+            # Look for author pattern in h3 tags
+            for tag in h3_tags:
+                if "BY" in tag.get_text().upper():
+                    authortag = tag
+                    break
 
-    h2tags = soup.findAll('h2', text=True)[1:]  # skip author heading
+    author = "Unknown"
+    if authortag:
+        author = re.sub('By ', '', authortag.get_text(), flags=re.IGNORECASE)
+
+    # Try h2 tags first (standard), then h3 tags (some books like treatisegovt)
+    h2tags = soup.findAll('h2')[1:]  # skip author heading
+    if not h2tags:
+        # If no h2 tags found, try h3 tags
+        h2tags = soup.findAll('h3')
+        # Skip author if it's in h3 (like treatisegovt has "BY IOHN LOCKE" in h3)
+        if h2tags and "BY" in h2tags[0].get_text().upper():
+            h2tags = h2tags[1:]
+
+    # Filter out non-chapter headings (like "Book II" in treatisegovt)
+    # Keep only headings that look like chapters (contain "CHAPTER", "CHAP", or roman numerals)
+    filtered_tags = []
+    for tag in h2tags:
+        text = tag.get_text().upper().strip()
+        if ('CHAPTER' in text or 'CHAP' in text or
+            re.search(r'CHAPTER\.?\s+[IVXLCDM]+', text) or
+            re.search(r'[IVXLCDM]+\.', text)):
+            filtered_tags.append(tag)
+        # Also keep PREFACE
+        elif 'PREFACE' in text:
+            filtered_tags.append(tag)
+
+    if filtered_tags:
+        h2tags = filtered_tags
+    # If we filtered everything out, use the original tags
+    elif h2tags:
+        # Keep all tags if none matched our filters
+        pass
 
     ich = 1
     for h2tag in h2tags:
@@ -99,29 +141,34 @@ def generate_chapter_html(gutenberg_path, etymology_data, output_dir, book_name)
         new_body = [str(h2tag)]
         chapter_file = f"{book_name}{ich}.html"
 
-        nexttag = h2tag.findNextSibling(['p', 'h2'])
+        nexttag = h2tag.findNextSibling(['p', 'h2', 'h3', 'h4'])
         if nexttag is None:
             break
 
         ip = 0
         while True:
-            if nexttag.name == 'h2':
+            if nexttag.name in ['h2', 'h3']:
+                # Stop at next chapter heading (h2 or h3)
                 break
             if nexttag is None:
                 break
 
             ip += 1
 
-            try:
-                tokens = nexttag.string.split()
-            except AttributeError:
-                tokens = []
+            # Include h4 tags (chapter subtitles) in output
+            if nexttag.name == 'h4':
+                new_body.append(str(nexttag))
+            else:
+                try:
+                    tokens = nexttag.get_text().split()
+                except AttributeError:
+                    tokens = []
 
-            if tokens:
-                tokens = tag_tokens(tokens, etymology_lookup)
-                new_body.append(' '.join(tokens))
+                if tokens:
+                    tokens = tag_tokens(tokens, etymology_lookup)
+                    new_body.append(' '.join(tokens))
 
-            nexttag = nexttag.findNextSibling(['p', 'h2'])
+            nexttag = nexttag.findNextSibling(['p', 'h2', 'h3', 'h4'])
             if nexttag is None:
                 break
 
@@ -153,11 +200,26 @@ def generate_full_html(gutenberg_path, etymology_data, output_path, book_name):
         html_doc = f.read()
     soup = BeautifulSoup(html_doc, 'html.parser')
 
-    titletag = soup.findAll('h1', text=True)[0]
-    title = titletag.string
+    titletag = soup.findAll('h1')[0]
+    title = titletag.get_text()
 
-    authortag = soup.findAll('h2', text=True)[0]
-    author = re.sub('By ', '', authortag.string)
+    # Try to find author in h2 first, then h3
+    authortag = None
+    h2_tags = soup.findAll('h2')
+    if h2_tags:
+        authortag = h2_tags[0]
+    else:
+        h3_tags = soup.findAll('h3')
+        if h3_tags:
+            # Look for author pattern in h3 tags
+            for tag in h3_tags:
+                if "BY" in tag.get_text().upper():
+                    authortag = tag
+                    break
+
+    author = "Unknown"
+    if authortag:
+        author = re.sub('By ', '', authortag.get_text(), flags=re.IGNORECASE)
 
     new_body = [
         f"<html><head><title>{title}</title>",
@@ -166,17 +228,19 @@ def generate_full_html(gutenberg_path, etymology_data, output_path, book_name):
         "</head><body>",
     ]
 
-    booktags = soup.findAll(['p', 'h2'], text=True)
+    booktags = soup.findAll(['p', 'h2', 'h3', 'h4'])
     logger.info("Processing %d tags", len(booktags))
 
     for booktag in booktags:
-        if booktag.name == 'h2':
+        if booktag.name in ['h2', 'h3', 'h4']:
             new_body.append(str(booktag))
 
-        elif booktag.name == 'p' and booktag.string is not None:
-            tokens = booktag.string.split()
-            tokens = tag_tokens(tokens, etymology_lookup)
-            new_body.append("<p>" + ' '.join(tokens) + "</p>")
+        elif booktag.name == 'p':
+            text = booktag.get_text()
+            if text:
+                tokens = text.split()
+                tokens = tag_tokens(tokens, etymology_lookup)
+                new_body.append("<p>" + ' '.join(tokens) + "</p>")
 
     new_body.append("</body></html>")
 

@@ -30,7 +30,7 @@ git clone -b gh-pages "${REMOTE_URL}" pelican/output
 rm -fr pelican/output/*
 
 echo "Generating pelican content..."
-make all
+make pelican
 
 (
 echo "Committing new content..."
