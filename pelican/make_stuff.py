@@ -4,18 +4,18 @@ import re
 import yaml
 from bs4 import BeautifulSoup
 
-TEMPLATE_WRAPPER = """{% extends 'bookbase.html' %}
-{% block title %}{title} &mdash; {{ SITENAME }}{% endblock %}
-{% block content %}
+TEMPLATE_WRAPPER = """{{% extends 'bookbase.html' %}}
+{{% block title %}}{title} &mdash; {{{{ SITENAME }}}}{{% endblock %}}
+{{% block content %}}
 
-{% include '_includes/{filename}' %}
+{{% include '_includes/{filename}' %}}
 
-{% endblock %}
+{{% endblock %}}
 """
 
-INDEX_WRAPPER = """{% extends 'base.html' %}
-{% block title %}{title} &mdash; {{ SITENAME }}{% endblock %}
-{% block content %}
+INDEX_WRAPPER = """{{% extends 'base.html' %}}
+{{% block title %}}{title} &mdash; {{{{ SITENAME }}}}{{% endblock %}}
+{{% block content %}}
 
 <h1>{title}</h1>
 <h2>{author}</h2>
@@ -26,7 +26,7 @@ INDEX_WRAPPER = """{% extends 'base.html' %}
 
 {links}
 
-{% endblock %}
+{{% endblock %}}
 """
 
 def extract_chapter_title(filepath):
