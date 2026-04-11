@@ -49,65 +49,24 @@ BOOTSWATCH_THEME = 'darkly'
 
 DIRECT_TEMPLATES = ('index', 'archives','books','blog')
 
-TEMPLATE_PAGES = {'blog.html':'blog.html',
-                  'books.html':'books.html'}
+# Standard directories for templates
+THEME_TEMPLATES_OVERRIDES = [
+    'generated_templates'
+]
 
+import os
+import sys
 
+# Add current directory to Python path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-EXTRA_TEMPLATES_PATHS = ['dubliners',
-                         'ulysses',
-                         'frankenstein',
-                         'crimeandpunishment',
-                         'roughingit',
-                         'variableman']
-
-# james joyce - dubliners 
-TEMPLATE_PAGES['jjdu.html'] = 'dubliners/index.html'
-for im1 in range(15):
-    i = im1+1
-    key = 'jjdu%d.html'%(i)
-    val = 'dubliners/%d/index.html'%(i)
-    TEMPLATE_PAGES[key] = val
-
-# james joyce - ulysses
-TEMPLATE_PAGES['jjul.html'] = 'ulysses/index.html'
-for im1 in range(18):
-    i = im1+1
-    key = 'jjul%d.html'%(i)
-    val = 'ulysses/%d/index.html'%(i)
-    TEMPLATE_PAGES[key] = val
-
-# mary shelley - frankenstein
-TEMPLATE_PAGES['msfr.html'] = 'frankenstein/index.html'
-for im1 in range(28):
-    i = im1+1
-    key = 'msfr%d.html'%(i)
-    val = 'frankenstein/%d/index.html'%(i)
-    TEMPLATE_PAGES[key] = val
-
-# dostoyevsky - crime and punishment
-TEMPLATE_PAGES['fdcp.html'] = 'crimeandpunishment/index.html'
-for im1 in range(47):
-    i = im1+1
-    key = 'fdcp%d.html'%(i)
-    val = 'crimeandpunishment/%d/index.html'%(i)
-    TEMPLATE_PAGES[key] = val
-
-# mark twain - roughing it
-TEMPLATE_PAGES['mtri.html'] = 'roughingit/index.html'
-for im1 in range(83):
-    i = im1+1
-    key = 'mtri%d.html'%(i)
-    val = 'roughingit/%d/index.html'%(i)
-    TEMPLATE_PAGES[key] = val
-
-# philip k. dick - variable man
-TEMPLATE_PAGES['pdvm.html'] = 'variableman/index.html'
-for im1 in range(4):
-    i = im1+1
-    key = 'pdvm%d.html'%(i)
-    val = 'variableman/%d/index.html'%(i)
-    TEMPLATE_PAGES[key] = val
+try:
+    from template_pages import TEMPLATE_PAGES
+    print(f"DEBUG: Loaded TEMPLATE_PAGES with {len(TEMPLATE_PAGES)} entries")
+except ImportError as e:
+    TEMPLATE_PAGES = {'blog.html':'blog.html', 'books.html':'books.html'}
+    print(f"DEBUG: Using default TEMPLATE_PAGES with {len(TEMPLATE_PAGES)} entries")
+    print(f"DEBUG: Import error: {e}")
 
 
 # --------------8<---------------------

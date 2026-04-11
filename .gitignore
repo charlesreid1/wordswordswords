@@ -1,6 +1,12 @@
+*.html
+.claude
 output
 cache
 gh-pages
+template_pages.py
+generated_templates
+cmr-pelican-theme
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -55,3 +61,14 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Data and Cache
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/*_progress.json
+
+# Rendered HTML
+html/
+pelican/*/_include*/
+pelican/*/_includes*/
