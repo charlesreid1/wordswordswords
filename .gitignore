@@ -3,6 +3,10 @@
 output
 cache
 gh-pages
+template_pages.py
+generated_templates
+cmr-pelican-theme
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
