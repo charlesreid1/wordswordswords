@@ -100,13 +100,13 @@ def generate_pelican_config_snippet(books_data):
         short = data['short']
         snippet.append(f"\n# {data['title']}")
         # Book index page at /bookname/index.html
-        snippet.append(f"TEMPLATE_PAGES['{short}.html'] = '{book_name}/index.html'")
-        
+        snippet.append(f"TEMPLATE_PAGES['{book_name}/{short}.html'] = '{book_name}/index.html'")
+
         # We need the chapters to generate the snippet properly
         chapters = get_chapters(book_name)
         for num, _ in chapters:
             # Chapter pages at /bookname/num/index.html
-            snippet.append(f"TEMPLATE_PAGES['{short}{num}.html'] = '{book_name}/{num}/index.html'")
+            snippet.append(f"TEMPLATE_PAGES['{book_name}/{short}{num}.html'] = '{book_name}/{num}/index.html'")
             
     return '\n'.join(snippet)
 

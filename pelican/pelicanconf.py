@@ -50,14 +50,23 @@ BOOTSWATCH_THEME = 'darkly'
 DIRECT_TEMPLATES = ('index', 'archives','books','blog')
 
 # Standard directories for templates
-EXTRA_TEMPLATES_PATHS = [
+THEME_TEMPLATES_OVERRIDES = [
     'generated_templates'
 ]
 
+import os
+import sys
+
+# Add current directory to Python path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 try:
     from template_pages import TEMPLATE_PAGES
-except ImportError:
+    print(f"DEBUG: Loaded TEMPLATE_PAGES with {len(TEMPLATE_PAGES)} entries")
+except ImportError as e:
     TEMPLATE_PAGES = {'blog.html':'blog.html', 'books.html':'books.html'}
+    print(f"DEBUG: Using default TEMPLATE_PAGES with {len(TEMPLATE_PAGES)} entries")
+    print(f"DEBUG: Import error: {e}")
 
 
 # --------------8<---------------------
