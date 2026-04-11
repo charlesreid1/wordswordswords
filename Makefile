@@ -1,12 +1,17 @@
-.PHONY: all etymology pelican-templates pelican clean-etymology clean-pelican clean clean-rendered
+.PHONY: all etymology pelican-templates pelican clean-etymology clean-pelican clean clean-rendered setup
 
-BOOKS = frankenstein dubliners ulysses crimeandpunishment roughingit variableman leviathan copperfield treatisegovt
+# Dynamically load books from books.yaml
+BOOKS = $(shell python3 -c "import yaml; print(' '.join(yaml.safe_load(open('books.yaml'))))")
 
 PELICAN_THEME_INCLUDES = pelican/cmr-pelican-theme/templates/_includes
 
-all: etymology pelican-templates pelican
+all: setup etymology pelican-templates pelican
 
-etymology:
+setup:
+	@echo "--- Ensuring template directories exist ---"
+	mkdir -p $(PELICAN_THEME_INCLUDES)
+
+etymology: setup
 	@echo "--- Generating etymology HTML for all books ---"
 	python -m etymology.run --book all --step html --mode pipeline
 
@@ -18,22 +23,15 @@ pelican:
 	@echo "--- Building Pelican site ---"
 	cd pelican && pelican -s pelicanconf.py
 
-deploy: all
+deploy:
 	@echo "--- Deploying to gh-pages ---"
-	cd pelican/output && git add . && git commit -m "Host update" && git push origin gh-pages
+	./deploy.sh
 
 clean-rendered:
 	@echo "--- Cleaning rendered HTML files ---"
 	rm -rf html/*
-	rm -f $(PELICAN_THEME_INCLUDES)/frankenstein*.html
-	rm -f $(PELICAN_THEME_INCLUDES)/dubliners*.html
-	rm -f $(PELICAN_THEME_INCLUDES)/ulysses*.html
-	rm -f $(PELICAN_THEME_INCLUDES)/crimeandpunishment*.html
-	rm -f $(PELICAN_THEME_INCLUDES)/roughingit*.html
-	rm -f $(PELICAN_THEME_INCLUDES)/variableman*.html
-	rm -f $(PELICAN_THEME_INCLUDES)/leviathan*.html
-	rm -f $(PELICAN_THEME_INCLUDES)/copperfield*.html
-	rm -f $(PELICAN_THEME_INCLUDES)/treatisegovt*.html
+	rm -rf pelican/generated_templates
+	rm -f $(PELICAN_THEME_INCLUDES)/*.html
 
 clean: clean-rendered
 	@echo "--- Cleaning Pelican output ---"

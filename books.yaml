@@ -1,0 +1,36 @@
+dubliners:
+  title: Dubliners
+  author: James Joyce
+  short: jjdu
+ulysses:
+  title: Ulysses
+  author: James Joyce
+  short: jjul
+frankenstein:
+  title: Frankenstein
+  author: Mary Shelley
+  short: msfr
+crimeandpunishment:
+  title: Crime and Punishment
+  author: Fyodor Dostoyevsky
+  short: fdcp
+roughingit:
+  title: Roughing It
+  author: Mark Twain
+  short: mtri
+variableman:
+  title: The Variable Man
+  author: Philip K. Dick
+  short: pdvm
+leviathan:
+  title: Leviathan
+  author: Thomas Hobbes
+  short: thle
+copperfield:
+  title: David Copperfield
+  author: Charles Dickens
+  short: cddc
+treatisegovt:
+  title: Second Treatise of Government
+  author: John Locke
+  short: jlst

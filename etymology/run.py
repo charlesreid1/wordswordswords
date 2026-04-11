@@ -26,17 +26,27 @@ import sys
 import yaml
 
 
-KNOWN_BOOKS = [
-    'copperfield',
-    'crimeandpunishment',
-    'dubliners',
-    'frankenstein',
-    'leviathan',
-    'roughingit',
-    'treatisegovt',
-    'ulysses',
-    'variableman',
-]
+def get_known_books():
+    """Load known books from the root books.yaml."""
+    yaml_path = os.path.join(os.path.dirname(__file__), '..', 'books.yaml')
+    if os.path.isfile(yaml_path):
+        with open(yaml_path, 'r') as f:
+            data = yaml.safe_load(f)
+            if data:
+                return list(data.keys())
+    return [
+        'copperfield',
+        'crimeandpunishment',
+        'dubliners',
+        'frankenstein',
+        'leviathan',
+        'roughingit',
+        'treatisegovt',
+        'ulysses',
+        'variableman',
+    ]
+
+KNOWN_BOOKS = get_known_books()
 
 
 def load_config(config_path="config.yaml"):

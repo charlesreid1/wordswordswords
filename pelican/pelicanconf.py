@@ -51,15 +51,7 @@ DIRECT_TEMPLATES = ('index', 'archives','books','blog')
 
 # Standard directories for templates
 EXTRA_TEMPLATES_PATHS = [
-    'dubliners',
-    'ulysses',
-    'frankenstein',
-    'crimeandpunishment',
-    'roughingit',
-    'variableman',
-    'leviathan',
-    'copperfield',
-    'treatisegovt'
+    'generated_templates'
 ]
 
 try:
